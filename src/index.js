@@ -1,5 +1,5 @@
 
-import uiModal from './components/modal';
+// import uiModal from './components/modal';
 
 export default class vanillaUI {
     constructor() {
