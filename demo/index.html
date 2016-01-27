@@ -7,20 +7,27 @@
 <body>
     <h1>Vanilla UI</h1>
 
-
-    <div class="modal-container is-hidden">
+    <div class="modal-container js-modal">
         <div class="modal">
-            
             <h3>Hello!</h3>
+            <p>I am modal 1 content.  All should fear me.</p>
+            <button class="js-modal-close-btn">Close modal 1</button>
+        </div>
+    </div>
 
-            <p>I am some modal content.  All should fear me.</p>
-
+    <div class="modal-container js-modal-2">
+        <div class="modal">
+            <h3>Oops!</h3>
+            <p>Deadly Neurotoxin gas released!</p>
+            <button class="js-modal-close-btn-2">Okay, cool</button>
         </div>
     </div>
     
+    <button class="js-modal-btn">Open modal 1</button>
+    <button class="js-modal-btn-2">Open modal 2</button>
 
-    <div class="modal-background"></div>
+    <div class="modal-background js-modal-overlay"></div>
 
-    <script src="../lib/library.js"></script>
+    <script src="../lib/vanilla-ui.js"></script>
 </body>
 </html>

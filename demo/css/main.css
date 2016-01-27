@@ -10,7 +10,6 @@ body {
 
 .modal-container,
 .modal-background {
-    display: none;
     position: fixed;
     height: 100%;
     left: 0;
