@@ -1,5 +1,5 @@
 
-import UIModal from 'components/modal/modal';
+import UIModal from './components/modal/modal';
 
 let modal1 = UIModal();
 let modal2 = UIModal({
