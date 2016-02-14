@@ -7,26 +7,27 @@
 <body>
     <h1>Vanilla UI</h1>
 
-    <div class="modal-container js-modal">
-        <div class="modal">
+    <div class="dialog-container js-dialog">
+        <div class="dialog">
             <h3>Hello!</h3>
-            <p>I am modal 1 content.  All should fear me.</p>
-            <button class="js-modal-close-btn">Close modal 1</button>
+            <p>I am dialog 1 content. I can be closed with both escape and buttons.</p>
+            <button class="js-dialog-close-btn">Close dialog 1</button>
         </div>
     </div>
 
-    <div class="modal-container js-modal-2">
-        <div class="modal">
+    <div class="dialog-container js-dialog-2">
+        <div class="dialog">
             <h3>Oops!</h3>
             <p>Deadly Neurotoxin gas released!</p>
-            <button class="js-modal-close-btn-2">Okay, cool</button>
+            <p>PS: I'm a modal, so no escape for you!</p>
+            <button class="js-dialog-close-btn-2">You got me!</button>
         </div>
     </div>
     
-    <button class="js-modal-btn">Open modal 1</button>
-    <button class="js-modal-btn-2">Open modal 2</button>
+    <button class="js-dialog-btn">Open dialog 1</button>
+    <button class="js-dialog-btn-2">Open dialog 2</button>
 
-    <div class="modal-background js-modal-overlay"></div>
+    <div class="dialog-background js-dialog-backdrop"></div>
 
     <script src="../lib/vanilla-ui.js"></script>
 </body>

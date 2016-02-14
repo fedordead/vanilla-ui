@@ -1,4 +1,4 @@
-Vanilla UI - Modal Dialog
+Vanilla UI - Dialog
 
 A widget that...
 

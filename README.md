@@ -9,6 +9,15 @@ UI Components written in ES6. Nothing artificial, all organic!
 * [ESLint](http://eslint.org/).
 * Tested with [Mocha](http://mochajs.org/) and [Chai](http://chaijs.com/).
 
+## Browser support
+
+* IE 10/11
+* All evergreen browsers:
+    * Edge
+    * Chrome
+    * Safari
+    * Firefox
+
 ## Overview
 
     .
