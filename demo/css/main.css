@@ -8,8 +8,8 @@ body {
     font-family: sans-serif;
 }
 
-.modal-container,
-.modal-background {
+.dialog-container,
+.dialog-background {
     position: fixed;
     height: 100%;
     left: 0;
@@ -18,12 +18,12 @@ body {
     width: 100%;
 }
 
-.modal-background {
+.dialog-background {
     background-color: rgba(0, 0, 0, 0.85);
     z-index: 100;
 }
 
-.modal-container {
+.dialog-container {
     align-items: center;
     display: flex;
     justify-content: center;
@@ -31,7 +31,7 @@ body {
     z-index: 101;
 }
 
-.modal {
+.dialog {
     background-color: #fff;
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.4);
     padding: 3em;
