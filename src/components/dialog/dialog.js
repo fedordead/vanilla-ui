@@ -1,59 +1,68 @@
 /**
  * @function UIDialog
  * @version 0.0.2
- * @desc display a Dialog
  */
 
 export default function UIDialog(userOptions) {
 
-    var DOM,
+    let DOM,
         state = {};
-        
+
     const defaults = {
         dialog:         '.js-dialog',
         openBtn:        '.js-dialog-btn',
         closeBtn:       '.js-dialog-close-btn',
-        backdrop:       '.js-dialog-backdrop',
         isModal:        false,
         showBackdrop:   true
     };
 
     // Combine defaults with passed in options
     const settings = Object.assign(defaults, userOptions);
-    
+
+    // Create the backdrop
+    const backdrop = document.createElement('div');
+
+    backdrop.classList.add('dialog-backdrop');
+
     init();
 
     /**
-    * @function init
-    * @desc Initialises the dialog
-    */ 
+     * @function init
+     * @desc Initialises the dialog
+     */
     function init() {
-        
+
         // Save all DOM queries for future use
         DOM = {
             'page': document.querySelectorAll('body')[0],
             'dialog': document.querySelectorAll(settings.dialog)[0],
             'openBtn': document.querySelectorAll(settings.openBtn)[0],
-            'closeBtn': document.querySelectorAll(settings.closeBtn)[0],
-            'backdrop': document.querySelectorAll(settings.backdrop)[0]
+            'closeBtn': document.querySelectorAll(settings.closeBtn)[0]
         };
-        
-        // Check if gallery exists, return if not
-        if (DOM.dialog === undefined) { return false; }
-        
+
+        // Check if the dialog exists, return if not
+        if (DOM.dialog === undefined) {
+            return false;
+        }
+
+        // Remove backdrop if turned off
+        if (!settings.showBackdrop) {
+            DOM.dialog.classList.add('no-backdrop');
+        }
+
         // Set page attribute
         DOM.page.setAttribute('data-ui-dialog', 'is-initialised');
 
         // Find dialog and hide if not already hidden
         DOM.dialog.classList.add('is-hidden');
-        DOM.backdrop.classList.add('is-hidden');
-        
-        // Attach event listeners to buttons
+
+        // Attach event listeners
         DOM.openBtn.addEventListener('click', show, false);
         DOM.closeBtn.addEventListener('click', hide, false);
-        DOM.backdrop.addEventListener('click', hide, false);
+        if (!settings.isModal) {
+            backdrop.addEventListener('click', hide, false);
+        }
         document.addEventListener('keydown', keyHandler, false);
-
     }
 
     /**
@@ -62,8 +71,9 @@ export default function UIDialog(userOptions) {
     function show() {
         state.isOpen = true;
         DOM.dialog.classList.remove('is-hidden');
-        DOM.backdrop.classList.remove('is-hidden');
         DOM.page.setAttribute('data-current-dialog', settings.dialog);
+        // Add the backdrop to the page
+        DOM.page.appendChild(backdrop);
     };
 
     /**
@@ -72,10 +82,11 @@ export default function UIDialog(userOptions) {
     function hide() {
         state.isOpen = false;
         DOM.dialog.classList.add('is-hidden');
-        DOM.backdrop.classList.add('is-hidden');
         DOM.page.removeAttribute('data-current-dialog');
+        // Remove the backdrop from the page
+        DOM.page.removeChild(backdrop);
     };
-    
+
     /**
      * @function keyHandler
      * @desc Checks to see if escape (key 27) has been pressed and dialog not modal
