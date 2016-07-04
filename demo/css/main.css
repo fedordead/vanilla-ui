@@ -9,26 +9,30 @@ body {
 }
 
 .dialog-container,
-.dialog-background {
+.dialog-backdrop {
+    align-items: center;
+    display: flex;
+    justify-content: center;
     position: fixed;
     height: 100%;
     left: 0;
     overflow: hidden;
     top: 0;
     width: 100%;
-}
-
-.dialog-background {
-    background-color: rgba(0, 0, 0, 0.85);
     z-index: 100;
 }
 
 .dialog-container {
-    align-items: center;
-    display: flex;
-    justify-content: center;
+    background-color: green;
     pointer-events: none;
-    z-index: 101;
+}
+
+.dialog-container.no-backdrop {
+    background-color: transparent;
+}
+
+.dialog-backdrop {
+    z-index: 99;
 }
 
 .dialog {
@@ -36,7 +40,7 @@ body {
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.4);
     padding: 3em;
     pointer-events: auto;
-    position: relative; 
+    position: relative;
     width: 26em;
 }
 
