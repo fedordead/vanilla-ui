@@ -1,14 +1,17 @@
-import UIDialog from './components/dialog/dialog';
+import Dialog from './components/dialog/dialog';
 
-let dialog1 = UIDialog();
-let dialog2 = UIDialog({
-    dialog:         '.js-dialog-2',
-    openBtn:        '.js-dialog-btn-2',
-    closeBtn:       '.js-dialog-close-btn-2',
-    isModal:        true,
-    showBackdrop:   false
+let dialog1 = Dialog();
+
+let dialog2 = Dialog({
+    target: '.js-dialog-target-2',
+    trigger: '.js-dialog-trigger-2',
+    closeBtn: '.js-dialog-close-btn-2',
+    isModal: true
 });
 
-// Stop whining about unused variables
-console.log(dialog1);
-console.log(dialog2);
+let dialog3 = Dialog({
+    target: '.js-dialog-target-3',
+    trigger: '.js-dialog-trigger-3',
+    closeBtn: '.js-dialog-close-btn-3',
+    showBackdrop: false
+});
