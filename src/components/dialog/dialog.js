@@ -3,6 +3,9 @@
  * @version 0.0.2
  */
 
+import {keyCodes} from '../../constants';
+
+
 export default function UIDialog(userOptions) {
 
     let DOM,
@@ -93,19 +96,16 @@ export default function UIDialog(userOptions) {
      * @param {Event} e
      */
     function keyHandler(e) {
-        if ([27].indexOf(e.which) > -1 && state.isOpen === true && !settings.isModal) {
+        if ([keyCodes.ESC_KEY].indexOf(e.which) > -1 && state.isOpen === true && !settings.isModal) {
             e.preventDefault();
             hide();
         }
     }
 
-    ////////////
-
     // External API
-    const module = {
-        show: show,
-        hide: hide
+    return {
+        show,
+        hide
     };
 
-    return module;
 }
