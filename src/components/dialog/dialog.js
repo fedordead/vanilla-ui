@@ -3,7 +3,7 @@
  * @version 0.0.2
  */
 
-import {keyCodes} from '../../constants';
+import {keyCodes, defaultClassNames} from '../../constants';
 
 
 export default function UIDialog(userOptions) {
@@ -25,7 +25,7 @@ export default function UIDialog(userOptions) {
     // Create the backdrop
     const backdrop = document.createElement('div');
 
-    backdrop.classList.add('dialog-backdrop');
+    backdrop.classList.add(defaultClassNames.DIALOG_BACKDROP);
 
     init();
 
@@ -37,9 +37,9 @@ export default function UIDialog(userOptions) {
 
         // Save all DOM queries for future use
         DOM = {
-            'page': document.querySelectorAll('body')[0],
-            'dialog': document.querySelectorAll(settings.dialog)[0],
-            'openBtn': document.querySelectorAll(settings.openBtn)[0],
+            'page':     document.querySelectorAll('body')[0],
+            'dialog':   document.querySelectorAll(settings.dialog)[0],
+            'openBtn':  document.querySelectorAll(settings.openBtn)[0],
             'closeBtn': document.querySelectorAll(settings.closeBtn)[0]
         };
 
@@ -50,14 +50,14 @@ export default function UIDialog(userOptions) {
 
         // Remove backdrop if turned off
         if (!settings.showBackdrop) {
-            DOM.dialog.classList.add('no-backdrop');
+            DOM.dialog.classList.add(defaultClassNames.NO_BACKDROP);
         }
 
         // Set page attribute
         DOM.page.setAttribute('data-ui-dialog', 'is-initialised');
 
         // Find dialog and hide if not already hidden
-        DOM.dialog.classList.add('is-hidden');
+        DOM.dialog.classList.add(defaultClassNames.IS_HIDDEN);
 
         // Attach event listeners
         DOM.openBtn.addEventListener('click', show, false);
@@ -73,7 +73,7 @@ export default function UIDialog(userOptions) {
      */
     function show() {
         state.isOpen = true;
-        DOM.dialog.classList.remove('is-hidden');
+        DOM.dialog.classList.remove(defaultClassNames.IS_HIDDEN);
         DOM.page.setAttribute('data-current-dialog', settings.dialog);
         // Add the backdrop to the page
         DOM.page.appendChild(backdrop);
@@ -84,7 +84,7 @@ export default function UIDialog(userOptions) {
      */
     function hide() {
         state.isOpen = false;
-        DOM.dialog.classList.add('is-hidden');
+        DOM.dialog.classList.add(defaultClassNames.IS_HIDDEN);
         DOM.page.removeAttribute('data-current-dialog');
         // Remove the backdrop from the page
         DOM.page.removeChild(backdrop);
