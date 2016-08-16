@@ -91,7 +91,7 @@ const UIDialog = ({
      * @param {Event} e
      */
     function keyHandler(e) {
-        if ([keyCodes.ESC_KEY].indexOf(e.which) > -1 && state.isOpen === true && !isModal) {
+        if ([keyCodes.ESCAPE].indexOf(e.which) > -1 && state.isOpen === true && !isModal) {
             e.preventDefault();
             hide();
         }
