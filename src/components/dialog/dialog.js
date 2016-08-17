@@ -3,26 +3,24 @@
  * @version 0.0.2
  */
 
-export default function UIDialog(userOptions) {
+import {keyCodes, defaultClassNames} from '../../constants';
+
+
+const UIDialog = ({
+        dialog = '.js-dialog',
+        openBtn = '.js-dialog-btn',
+        closeBtn = '.js-dialog-close-btn',
+        isModal = false,
+        showBackdrop = true
+    } = {}) => {
 
     let DOM,
         state = {};
 
-    const defaults = {
-        dialog:         '.js-dialog',
-        openBtn:        '.js-dialog-btn',
-        closeBtn:       '.js-dialog-close-btn',
-        isModal:        false,
-        showBackdrop:   true
-    };
-
-    // Combine defaults with passed in options
-    const settings = Object.assign(defaults, userOptions);
-
     // Create the backdrop
     const backdrop = document.createElement('div');
 
-    backdrop.classList.add('dialog-backdrop');
+    backdrop.classList.add(defaultClassNames.DIALOG_BACKDROP);
 
     init();
 
@@ -34,10 +32,10 @@ export default function UIDialog(userOptions) {
 
         // Save all DOM queries for future use
         DOM = {
-            'page': document.querySelectorAll('body')[0],
-            'dialog': document.querySelectorAll(settings.dialog)[0],
-            'openBtn': document.querySelectorAll(settings.openBtn)[0],
-            'closeBtn': document.querySelectorAll(settings.closeBtn)[0]
+            'page':     document.querySelectorAll('body')[0],
+            'dialog':   document.querySelectorAll(dialog)[0],
+            'openBtn':  document.querySelectorAll(openBtn)[0],
+            'closeBtn': document.querySelectorAll(closeBtn)[0]
         };
 
         // Check if the dialog exists, return if not
@@ -46,20 +44,20 @@ export default function UIDialog(userOptions) {
         }
 
         // Remove backdrop if turned off
-        if (!settings.showBackdrop) {
-            DOM.dialog.classList.add('no-backdrop');
+        if (!showBackdrop) {
+            DOM.dialog.classList.add(defaultClassNames.NO_BACKDROP);
         }
 
         // Set page attribute
         DOM.page.setAttribute('data-ui-dialog', 'is-initialised');
 
         // Find dialog and hide if not already hidden
-        DOM.dialog.classList.add('is-hidden');
+        DOM.dialog.classList.add(defaultClassNames.IS_HIDDEN);
 
         // Attach event listeners
         DOM.openBtn.addEventListener('click', show, false);
         DOM.closeBtn.addEventListener('click', hide, false);
-        if (!settings.isModal) {
+        if (!isModal) {
             backdrop.addEventListener('click', hide, false);
         }
         document.addEventListener('keydown', keyHandler, false);
@@ -70,8 +68,8 @@ export default function UIDialog(userOptions) {
      */
     function show() {
         state.isOpen = true;
-        DOM.dialog.classList.remove('is-hidden');
-        DOM.page.setAttribute('data-current-dialog', settings.dialog);
+        DOM.dialog.classList.remove(defaultClassNames.IS_HIDDEN);
+        DOM.page.setAttribute('data-current-dialog', dialog);
         // Add the backdrop to the page
         DOM.page.appendChild(backdrop);
     };
@@ -81,7 +79,7 @@ export default function UIDialog(userOptions) {
      */
     function hide() {
         state.isOpen = false;
-        DOM.dialog.classList.add('is-hidden');
+        DOM.dialog.classList.add(defaultClassNames.IS_HIDDEN);
         DOM.page.removeAttribute('data-current-dialog');
         // Remove the backdrop from the page
         DOM.page.removeChild(backdrop);
@@ -93,19 +91,17 @@ export default function UIDialog(userOptions) {
      * @param {Event} e
      */
     function keyHandler(e) {
-        if ([27].indexOf(e.which) > -1 && state.isOpen === true && !settings.isModal) {
+        if ([keyCodes.ESCAPE].indexOf(e.which) > -1 && state.isOpen === true && !isModal) {
             e.preventDefault();
             hide();
         }
     }
 
-    ////////////
-
     // External API
-    const module = {
-        show: show,
-        hide: hide
+    return {
+        show,
+        hide
     };
+};
 
-    return module;
-}
+export default UIDialog;
