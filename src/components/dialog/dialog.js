@@ -2,6 +2,7 @@ import {keyCodes, defaultClassNames, focusableSelectors} from '../../constants';
 import qa from '../../utils/qa';
 import defer from '../../utils/defer';
 
+
 /**
  * @function UIDialog
  * @version 0.0.2
@@ -94,9 +95,13 @@ const UIDialog = ({
         dialog.setAttribute('aria-hidden', true);
         dialog.removeAttribute('tabindex');
 
-        // TODO - Unbind events
+        // Unbind events
+        unbindKeyCodeEvents();
+        if (!isModal && DOM.backdrop) {
+            unbindBackdropEvents();
+        }
 
-        //  remove active state hook class
+        //  Remove active state hook class
         dialog.classList.remove(activeClass);
 
         // Remove backdrop if needed
@@ -104,7 +109,7 @@ const UIDialog = ({
             DOM.page.removeChild(DOM.backdrop);
         }
 
-        //  return focus to button that opened the dialog and reset state
+        //  Return focus to button that opened the dialog and reset state
         state.currentOpenButton.focus();
         state.currentOpenButton = null;
         state.currentDialog = null;
@@ -171,12 +176,31 @@ const UIDialog = ({
     }
 
     /**
+     * @function unbindKeyCodeEvents
+     * @type private
+     * @desc Removes event listener for keydown on the document
+     */
+    function unbindKeyCodeEvents() {
+        document.removeEventListener('keydown', handleKeyPress);
+    }
+
+    /**
      * @function bindBackdropEvents
      * @type private
      * @desc Adds event listener for keydown on the document
      */
     function bindBackdropEvents() {
         DOM.backdrop.addEventListener('click', handleBackdropClick);
+    }
+
+
+    /**
+     * @function unbindBackdropEvents
+     * @type private
+     * @desc Removes event listener for keydown on the document
+     */
+    function unbindBackdropEvents() {
+        DOM.backdrop.removeEventListener('click', handleBackdropClick);
     }
 
 
@@ -203,7 +227,9 @@ const UIDialog = ({
         //  Bind events
         defer(bindKeyCodeEvents);
         defer(bindCloseEvents);
-        if (!isModal && DOM.backdrop) defer(bindBackdropEvents);
+        if (!isModal && DOM.backdrop) {
+            defer(bindBackdropEvents);
+        }
 
         // Add backdrop if needed
         if (DOM.backdrop) {
