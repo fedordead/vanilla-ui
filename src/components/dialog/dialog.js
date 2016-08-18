@@ -1,4 +1,4 @@
-import {keyCodes, defaultClassNames, focusableSelectors} from '../../constants';
+import {keyCodes, defaultClassNames, NATIVELY_FOCUSABLE_ELEMENTS} from '../../constants';
 
 import createEl from '../../utils/createEl';
 import defer from '../../utils/defer';
@@ -145,7 +145,7 @@ const UIDialog = ({
         dialog.setAttribute('aria-hidden', false);
 
         //  Set the first and last focusable elements
-        state.focusableElements = qa(focusableSelectors.join(), dialog);
+        state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
 
         //  focus first element if exists, otherwise focus dialog element
         if (state.focusableElements.length) {
