@@ -2,7 +2,7 @@
   "name": "vanilla-ui",
   "version": "0.0.1",
   "description": "UI Components written in ES6. Nothing artificial, all organic!",
-  "main": "lib/library.js",
+  "main": "lib/vanilla-ui.js",
   "scripts": {
     "build": "webpack --mode=build",
     "dev": "webpack --progress --colors --watch --mode=dev",
