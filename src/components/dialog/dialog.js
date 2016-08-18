@@ -35,6 +35,36 @@ const UIDialog = ({
 
 
     /**
+     * @function bindBackdropEvents
+     * @desc Adds event listener for clicking on backdrop
+     */
+    function bindBackdropEvents() {
+        DOM.backdrop.addEventListener('click', handleBackdropClick);
+    }
+
+
+    /**
+     * @function unbindBackdropEvents
+     * @desc Removes event listener for clicking on backdrop
+     */
+    function unbindBackdropEvents() {
+        DOM.backdrop.removeEventListener('click', handleBackdropClick);
+    }
+
+
+    /**
+     * @function handleBackdropClick
+     * @desc If backdrop has been clicked, dismiss dialog
+     * @param {Event} e
+     */
+    function handleBackdropClick(e) {
+        if (e.target === DOM.backdrop) {
+            hideDialog(state.currentDialog);
+        }
+    }
+
+
+    /**
      * @function createBackdrop
      * @desc Creates the dialog backdrop
      */
@@ -49,6 +79,16 @@ const UIDialog = ({
 
 
     /**
+     * @function addBackdropA11y
+     * @desc Applies relevant roles and attributes to the backdrop
+     * @param {node} backdrop
+     */
+    function addBackdropA11y(backdrop) {
+        backdrop.setAttribute('aria-hidden', true);
+    }
+
+
+    /**
      * @function addDialogA11y
      * @desc Applies relevant roles and attributes to the dialog
      * @param {node} dialog
@@ -58,75 +98,6 @@ const UIDialog = ({
 
         dialog.setAttribute('aria-hidden', 'true');
         dialog.setAttribute('role', role);
-    }
-
-
-    /**
-     * @function addBackdropA11y
-     * @desc Applies relevant roles and attributes to the backdrop
-     * @param {node} backdrop
-     */
-    function addBackdropA11y(backdrop) {
-        backdrop.setAttribute('aria-hidden', true);
-    }
-
-    /**
-     * @function closeDialog
-     * @desc sets up dialog ready to be hidden
-     * @param {node} dialog
-     */
-    function closeDialog() {
-        hideDialog(state.currentDialog);
-    }
-
-    /**
-     * @function hideDialog
-     * @desc adds aria attributes and hides dialog
-     * @param {node} dialog
-     */
-    function hideDialog(dialog) {
-
-        //  show container and focus the dialog
-        dialog.setAttribute('aria-hidden', true);
-        dialog.removeAttribute('tabindex');
-
-        // Unbind events
-        unbindKeyCodeEvents();
-        if (!isModal && DOM.backdrop) {
-            unbindBackdropEvents();
-        }
-
-        //  Remove active state hook class
-        dialog.classList.remove(activeClass);
-
-        // Remove backdrop if needed
-        if (DOM.backdrop) {
-            DOM.page.removeChild(DOM.backdrop);
-        }
-
-        //  Return focus to button that opened the dialog and reset state
-        state.currentOpenButton.focus();
-        state.currentOpenButton = null;
-        state.currentDialog = null;
-    }
-
-
-    /**
-     * @function openDialog
-     * @desc sets up dialog and state ready to be shown
-     * @param {node} dialog
-     */
-    function openDialog(e) {
-        // get trigger button so focus can be returned to it later
-        const button = e.target;
-        // get dialog that should be opened
-        const dialog = document.getElementById(button.getAttribute('aria-controls'));
-
-        //  update State
-        state.currentOpenButton = button;
-        state.currentDialog = dialog;
-
-        showDialog(dialog);
     }
 
 
@@ -146,49 +117,21 @@ const UIDialog = ({
 
 
     /**
-     * @function bindCloseEvents
-     * @desc Finds all close buttons and attaches click event listener
+     * @function openDialog
+     * @desc sets up dialog and state ready to be shown
      * @param {node} dialog
      */
-    function bindCloseEvents(dialog = state.currentDialog) {
-        // Grab all buttons which open this instance of the modal
-        let closeButtons = qa(closeBtn);
+    function openDialog(e) {
+        // Get trigger button so focus can be returned to it later
+        const button = e.target;
+        // Get dialog that should be opened
+        const dialog = document.getElementById(button.getAttribute('aria-controls'));
 
-        closeButtons.forEach(button => button.addEventListener('click', closeDialog));
-    }
+        //  Update State
+        state.currentOpenButton = button;
+        state.currentDialog = dialog;
 
-
-    /**
-     * @function bindKeyCodeEvents
-     * @desc Adds event listener for keydown on the document
-     */
-    function bindKeyCodeEvents() {
-        document.addEventListener('keydown', handleKeyPress);
-    }
-
-    /**
-     * @function unbindKeyCodeEvents
-     * @desc Removes event listener for keydown on the document
-     */
-    function unbindKeyCodeEvents() {
-        document.removeEventListener('keydown', handleKeyPress);
-    }
-
-    /**
-     * @function bindBackdropEvents
-     * @desc Adds event listener for keydown on the document
-     */
-    function bindBackdropEvents() {
-        DOM.backdrop.addEventListener('click', handleBackdropClick);
-    }
-
-
-    /**
-     * @function unbindBackdropEvents
-     * @desc Removes event listener for keydown on the document
-     */
-    function unbindBackdropEvents() {
-        DOM.backdrop.removeEventListener('click', handleBackdropClick);
+        showDialog(dialog);
     }
 
 
@@ -201,7 +144,7 @@ const UIDialog = ({
         dialog.setAttribute('tabindex', 1);
         dialog.setAttribute('aria-hidden', false);
 
-        //  set first/last focusable elements
+        //  Set the first and last focusable elements
         state.focusableElements = qa(focusableSelectors.join(), dialog);
 
         //  focus first element if exists, otherwise focus dialog element
@@ -227,6 +170,79 @@ const UIDialog = ({
         dialog.classList.add(activeClass);
     }
 
+
+    /**
+     * @function bindCloseEvents
+     * @desc Finds all close buttons and attaches click event listener
+     * @param {node} dialog
+     */
+    function bindCloseEvents(dialog = state.currentDialog) {
+        // Grab all buttons which open this instance of the modal
+        let closeButtons = qa(closeBtn);
+
+        closeButtons.forEach(button => button.addEventListener('click', closeDialog));
+    }
+
+
+    /**
+     * @function closeDialog
+     * @desc Sets up dialog ready to be hidden
+     */
+    function closeDialog() {
+        hideDialog(state.currentDialog);
+    }
+
+
+    /**
+     * @function hideDialog
+     * @desc adds aria attributes and hides dialog, removing backdrop if needed
+     * @param {node} dialog
+     */
+    function hideDialog(dialog) {
+
+        //  show container and focus the dialog
+        dialog.setAttribute('aria-hidden', true);
+        dialog.removeAttribute('tabindex');
+
+        // Unbind events
+        unbindKeyCodeEvents();
+        if (!isModal && DOM.backdrop) {
+            unbindBackdropEvents();
+        }
+
+        //  Remove active state hook class
+        dialog.classList.remove(activeClass);
+
+        // Remove backdrop if needed
+        if (DOM.backdrop) {
+            DOM.page.removeChild(DOM.backdrop);
+        }
+
+        // Reset state and return focus to button that opened the dialog
+        state.currentOpenButton.focus();
+        state.currentOpenButton = null;
+        state.currentDialog = null;
+    }
+
+
+    /**
+     * @function bindKeyCodeEvents
+     * @desc Adds event listener for keydown on the document
+     */
+    function bindKeyCodeEvents() {
+        document.addEventListener('keydown', handleKeyPress);
+    }
+
+
+    /**
+     * @function unbindKeyCodeEvents
+     * @desc Removes event listener for keydown on the document
+     */
+    function unbindKeyCodeEvents() {
+        document.removeEventListener('keydown', handleKeyPress);
+    }
+
+
     /**
      * @function handleKeyPress
      * @desc Checks to see if escape (key 27) has been pressed and dialog not modal
@@ -234,18 +250,6 @@ const UIDialog = ({
      */
     function handleKeyPress(e) {
         if (e.keyCode === keyCodes.ESCAPE && !isModal) {
-            hideDialog(state.currentDialog);
-        }
-    }
-
-
-    /**
-     * @function handleBackdropClick
-     * @desc If backdrop has been clicked, dismiss dialog
-     * @param {Event} e
-     */
-    function handleBackdropClick(e) {
-        if (e.target === DOM.backdrop) {
             hideDialog(state.currentDialog);
         }
     }
@@ -270,13 +274,13 @@ const UIDialog = ({
         }
 
         DOM.dialogs.forEach(dialog => {
-            // add accessibility to dialog
+            // Add accessibility to dialog
             addDialogA11y(dialog);
 
-            // set up event listeners for opening dialog
+            // Set up event listeners for opening dialog
             bindOpenEvents(dialog);
 
-            // set ready class
+            // Set ready class
             dialog.classList.add(readyClass);
         });
     }
