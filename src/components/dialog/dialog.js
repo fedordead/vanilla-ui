@@ -42,7 +42,7 @@ const UIDialog = ({
         // Create the backdrop
         DOM.backdrop = document.createElement('div');
 
-        DOM.backdrop.classList.add(defaultClassNames.DIALOGBACKDROP);
+        DOM.backdrop.classList.add(defaultClassNames.DIALOG_BACKDROP);
 
         addBackdropA11y(DOM.backdrop);
     }
