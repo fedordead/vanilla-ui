@@ -36,7 +36,6 @@ const UIDialog = ({
 
     /**
      * @function createBackdrop
-     * @type private
      * @desc Creates the dialog backdrop
      */
     function createBackdrop() {
@@ -51,7 +50,6 @@ const UIDialog = ({
 
     /**
      * @function addDialogA11y
-     * @type private
      * @desc Applies relevant roles and attributes to the dialog
      * @param {node} dialog
      */
@@ -65,7 +63,6 @@ const UIDialog = ({
 
     /**
      * @function addBackdropA11y
-     * @type private
      * @desc Applies relevant roles and attributes to the backdrop
      * @param {node} backdrop
      */
@@ -75,7 +72,6 @@ const UIDialog = ({
 
     /**
      * @function closeDialog
-     * @type private
      * @desc sets up dialog ready to be hidden
      * @param {node} dialog
      */
@@ -85,7 +81,6 @@ const UIDialog = ({
 
     /**
      * @function hideDialog
-     * @type private
      * @desc adds aria attributes and hides dialog
      * @param {node} dialog
      */
@@ -118,7 +113,6 @@ const UIDialog = ({
 
     /**
      * @function openDialog
-     * @type private
      * @desc sets up dialog and state ready to be shown
      * @param {node} dialog
      */
@@ -138,7 +132,6 @@ const UIDialog = ({
 
     /**
      * @function bindOpenEvents
-     * @type private
      * @desc Finds all open buttons and attaches click event listener
      * @param {node} dialog
      */
@@ -154,7 +147,6 @@ const UIDialog = ({
 
     /**
      * @function bindCloseEvents
-     * @type private
      * @desc Finds all close buttons and attaches click event listener
      * @param {node} dialog
      */
@@ -168,7 +160,6 @@ const UIDialog = ({
 
     /**
      * @function bindKeyCodeEvents
-     * @type private
      * @desc Adds event listener for keydown on the document
      */
     function bindKeyCodeEvents() {
@@ -177,7 +168,6 @@ const UIDialog = ({
 
     /**
      * @function unbindKeyCodeEvents
-     * @type private
      * @desc Removes event listener for keydown on the document
      */
     function unbindKeyCodeEvents() {
@@ -186,7 +176,6 @@ const UIDialog = ({
 
     /**
      * @function bindBackdropEvents
-     * @type private
      * @desc Adds event listener for keydown on the document
      */
     function bindBackdropEvents() {
@@ -196,7 +185,6 @@ const UIDialog = ({
 
     /**
      * @function unbindBackdropEvents
-     * @type private
      * @desc Removes event listener for keydown on the document
      */
     function unbindBackdropEvents() {
@@ -206,7 +194,6 @@ const UIDialog = ({
 
     /**
      * @function showDialog
-     * @type private
      * @desc Sets up focusable elements, close and key events and displays modal
      */
     function showDialog(dialog) {
