@@ -1,6 +1,8 @@
 import {keyCodes, defaultClassNames, focusableSelectors} from '../../constants';
-import qa from '../../utils/qa';
+
+import createEl from '../../utils/createEl';
 import defer from '../../utils/defer';
+import qa from '../../utils/qa';
 
 
 /**
@@ -70,9 +72,7 @@ const UIDialog = ({
      */
     function createBackdrop() {
         // Create the backdrop
-        DOM.backdrop = document.createElement('div');
-
-        DOM.backdrop.classList.add(defaultClassNames.DIALOG_BACKDROP);
+        DOM.backdrop = createEl({id: 'hawk', className: defaultClassNames.DIALOG_BACKDROP});
 
         addBackdropA11y(DOM.backdrop);
     }
