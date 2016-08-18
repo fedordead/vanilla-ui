@@ -1,10 +1,11 @@
 /**
  * @function createEl
  * @desc creates an element from an object
- * @param {obj} attributes for element
+ * @param {object} attributes for element
  * @param {string} element the type of element to create
  * @param {string} className a list of classes to be applied
- * @param {rest} attributes any other attributes passed in.  Must be provided in camelcase
+ * @param {object} attributes any other attributes passed in.  Must be provided in camelcase
+ * @return {node} - Element with all applied attributes.
  */
 
 const createEl = ({
