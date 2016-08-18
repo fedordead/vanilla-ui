@@ -99,9 +99,15 @@ const UIDialog = ({
         //  remove active state hook class
         dialog.classList.remove(activeClass);
 
+        // Remove backdrop if needed
+        if (DOM.backdrop) {
+            DOM.page.removeChild(DOM.backdrop);
+        }
+
         //  return focus to button that opened the dialog and reset state
         state.currentOpenButton.focus();
         state.currentOpenButton = null;
+        state.currentDialog = null;
     }
 
 
