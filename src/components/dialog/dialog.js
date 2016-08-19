@@ -110,7 +110,7 @@ const UIDialog = ({
         const id = dialog.getAttribute('id');
 
         // Grab all buttons which open this instance of the modal
-        let openButtons = qa(`${openBtn}[aria-controls="${id}"]`);
+        const openButtons = qa(`${openBtn}[aria-controls="${id}"]`);
 
         openButtons.forEach(button => button.addEventListener('click', openDialog));
     }
@@ -178,7 +178,7 @@ const UIDialog = ({
      */
     function bindCloseEvents(dialog = state.currentDialog) {
         // Grab all buttons which open this instance of the modal
-        let closeButtons = qa(closeBtn);
+        const closeButtons = qa(closeBtn);
 
         closeButtons.forEach(button => button.addEventListener('click', closeDialog));
     }
