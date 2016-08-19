@@ -3,7 +3,7 @@ import {keyCodes, defaultClassNames, NATIVELY_FOCUSABLE_ELEMENTS} from '../../co
 import createEl from '../../utils/createEl';
 // import defer from '../../utils/defer';
 import qa from '../../utils/qa';
-// import trapFocus from '../../utils/trapFocus';
+import nodeMap from '../../utils/nodeMap';
 
 
 /**
@@ -28,7 +28,7 @@ const UITypeahead = ({
     // Keeps track of current state
     let state = {
         currentOpenButton: null,
-        currenttypeahead: null,
+        currentTypeahead: null,
         focusableElements: null //  elements within modal
     };
 
@@ -54,16 +54,19 @@ const UITypeahead = ({
         };
     };
 
+
+    /**
+     * @function generateOptions
+     * @desc Options to select from
+     */
     function generateOptions(options) {
-        return [].slice.call(options).map(option => {
-            return createDropdownItem(option);
-        });
+        return nodeMap(options, createDropdownItem);
     }
 
 
     /**
      * @function createTypeaheadElement
-     * @desc Creates the dialog backdrop
+     * @desc Creates the core typeahead UI
      */
     function createTypeaheadElement({id, text, name, options}) {
 
@@ -122,7 +125,7 @@ const UITypeahead = ({
 
     /**
      * @function init
-     * @desc Initialises the typeahead
+     * @desc Initialises the Typeahead
      */
     function init() {
 
