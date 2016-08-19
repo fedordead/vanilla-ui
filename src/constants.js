@@ -1,7 +1,8 @@
 // Keyboard keycodes
 export const keyCodes = {
-    ESCAPE: 27,
+    TAB: 9,
     ENTER: 13,
+    ESCAPE: 27,
     SPACE: 32,
     LEFT_ARROW: 37,
     UP_ARROW: 38,
