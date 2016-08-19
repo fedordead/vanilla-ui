@@ -1,4 +1,5 @@
-import UIDialog from './components/dialog/dialog';
+import UIDialog from './components/dialog';
+import UITypeahead from './components/typeahead';
 
 const dialog1 = UIDialog();
 const dialog2 = UIDialog({
@@ -9,6 +10,11 @@ const dialog2 = UIDialog({
     showBackdrop:   false
 });
 
+
+const typeahead1 = UITypeahead();
+
+
 // Stop whining about unused variables
 console.log(dialog1);
 console.log(dialog2);
+console.log(typeahead1);
