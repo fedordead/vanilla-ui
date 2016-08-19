@@ -10,7 +10,9 @@
 
 const createEl = ({
         element = 'div',
+        children,
         className,
+        text,
         ...attributes
     } = {}) => {
 
@@ -22,11 +24,26 @@ const createEl = ({
         el.classList.add(className);
     }
 
+    if (text) {
+        const elText = document.createTextNode(text);
+
+        el.appendChild(elText);
+    }
+
     // Adds other attributes e.g id, type, role etc provided
     if (attributes !== {}) {
         for (let key in attributes) {
             el.setAttribute(key, attributes[key]);
         }
+    }
+
+    // Create new element for each child and append
+    if (children) {
+        children.forEach(child => {
+            const el2 = createEl(child);
+
+            el.appendChild(el2);
+        });
     }
 
     return el;
