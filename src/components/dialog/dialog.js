@@ -3,6 +3,7 @@ import {keyCodes, defaultClassNames, NATIVELY_FOCUSABLE_ELEMENTS} from '../../co
 import createEl from '../../utils/createEl';
 import defer from '../../utils/defer';
 import qa from '../../utils/qa';
+import trapFocus from '../../utils/trapFocus';
 
 
 /**
@@ -141,14 +142,16 @@ const UIDialog = ({
      */
     function showDialog(dialog) {
         //  Focus the modal and remove aria attributes
-        dialog.setAttribute('tabindex', 1);
+        dialog.setAttribute('tabindex', 0);
         dialog.setAttribute('aria-hidden', false);
 
-        //  Set the first and last focusable elements
+        //  Get focusable elements from inside Dialog
         state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
 
-        //  focus first element if exists, otherwise focus dialog element
+        //  Set focus to first element, fallback to Dialog.
         if (state.focusableElements.length) {
+            // TODO - figure out why this isn't focussing.
+            // console.log('found focusable element', state.focusableElements[0]);
             state.focusableElements[0].focus();
         } else {
             dialog.focus();
@@ -251,6 +254,10 @@ const UIDialog = ({
     function handleKeyPress(e) {
         if (e.keyCode === keyCodes.ESCAPE && !isModal) {
             hideDialog(state.currentDialog);
+        }
+
+        if (e.keyCode === keyCodes.TAB && !isModal) {
+            trapFocus(e, state.focusableElements);
         }
     }
 
