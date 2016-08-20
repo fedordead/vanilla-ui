@@ -74,10 +74,11 @@ const UITypeahead = ({
     function updateOptions(inputValue) {
 
         // create subset of options based on word typed
-        state.subSetOptions = state.fullOptions.filter(val => val.innerText.includes(inputValue));
+        state.subSetOptions = state.fullOptions.filter(val => val.innerText.toLowerCase().includes(inputValue));
 
         // create new dropdown element with same props
         const dropDown = createEl(generateDropdown());
+
         dropDown.classList.add(defaultClassNames.IS_ACTIVE);
         // add new subset to the new dropdown
         state.subSetOptions.forEach(option => dropDown.appendChild(option));
@@ -87,6 +88,9 @@ const UITypeahead = ({
             dropDown,
             state.currentDropdown
         );
+
+        // Update State
+        state.currentDropdown = dropDown;
     }
 
     /**
