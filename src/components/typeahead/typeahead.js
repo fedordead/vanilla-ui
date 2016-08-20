@@ -1,9 +1,10 @@
-import {keyCodes, defaultClassNames, NATIVELY_FOCUSABLE_ELEMENTS} from '../../constants';
+import {keyCodes, defaultClassNames} from '../../constants';
 
 import createEl from '../../utils/createEl';
 // import defer from '../../utils/defer';
 import qa from '../../utils/qa';
 import nodeMap from '../../utils/nodeMap';
+import isAlphaNumeric from '../../utils/isAlphaNumeric';
 
 
 /**
@@ -27,30 +28,96 @@ const UITypeahead = ({
 
     // Keeps track of current state
     let state = {
-        currentOpenButton: null,
-        currentTypeahead: null,
-        focusableElements: null //  elements within modal
+        currentInput: null,
+        currentDropdown: null,
+        focusableElements: null,
+        isDropdownOpen: false,
+        currentTypedWord: ''
     };
 
+
+    /**
+     * @function handleKeyPress
+     * @desc Checks to see if escape (key 27) has been pressed and dialog not modal
+     * @param {Event} e
+     */
+    function handleKeyPress(e) {
+
+        const alphaNumeric = isAlphaNumeric(e.keyCode);
+
+        if (!state.isDropdownOpen) {
+            if (e.keyCode === keyCodes.UP_ARROW ||
+                e.keyCode === keyCodes.DOWN_ARROW ||
+                alphaNumeric) {
+                showTypeahead(state.currentDropdown);
+            }
+        } else {
+
+            if (e.keyCode === keyCodes.ESCAPE) {
+                // close typeahead
+                // remove event listener for keyhandler
+            } else if (e.keyCode === keyCodes.UP_ARROW ||
+                e.keyCode === keyCodes.DOWN_ARROW) {
+                // move up and down list
+            }
+        }
+
+        if (alphaNumeric) {
+            // reduce list
+        }
+
+    }
+
+
+    /**
+     * @function setCurrentTypeahead
+     * @desc sets up typeahead and state ready to be shown
+     * @param {node} typeahead
+     */
+    function setCurrentTypeahead(e) {
+        // Get trigger input so focus can be returned to it later
+        const input = e.target;
+        // Get dialog that should be opened
+        const dropdown = document.getElementById(input.getAttribute('aria-owns')) || document.getElementById(input.getAttribute('aria-controls'));
+
+        //  Update State
+        state.currentInput = input;
+        state.currentDropdown = dropdown;
+    }
+
+
+    /**
+     * @function showTypeahead
+     * @desc Sets up focusable elements, close and key events and displays modal
+     */
+    function showTypeahead(dropdown) {
+        //  Remove aria attributes update State
+        dropdown.setAttribute('aria-hidden', false);
+        state.isDropdownOpen = true;
+
+        //  Add class to make dialog visible
+        dropdown.classList.add(activeClass);
+    }
+
+
+    /**
+     * @function createDropdownItem
+     * @desc sets up typeahead and state ready to be shown
+     * @param {object} params
+     * @param {string} params.value
+     * @param {string} params.name
+     * @param {string} params.id
+     * @param {string} params.text
+     */
     const createDropdownItem = ({value, name = 'typer', id, text}) => {
 
-        const input = {
-            element: 'input',
-            type: 'radio',
-            value,
-            name,
-            id: text
-        };
-
-        const label = {
-            element: 'label',
-            for: text,
-            text
-        };
-
         return {
+            id: text,
+            ['data-value']: value,
             element: 'li',
-            children: [input, label]
+            role: 'option',
+            text,
+            tabindex: -1
         };
     };
 
@@ -63,6 +130,10 @@ const UITypeahead = ({
         return nodeMap(options, createDropdownItem);
     }
 
+    function typeaheadButtonClick(e) {
+        setCurrentTypeahead(e);
+        showTypeahead(state.currentDropdown);
+    };
 
     /**
      * @function createTypeaheadElement
@@ -76,7 +147,13 @@ const UITypeahead = ({
             className: 'c-typeahead__input',
             value: '',
             id,
-            name
+            name,
+            role: 'combobox',
+            ['aria-autocomplete']: 'inline',
+            ['aria-owns']: 'js-typeahead',
+            tabindex: 0,
+            onKeydown: handleKeyPress,
+            onFocus: setCurrentTypeahead
         };
 
         const textInputLabel = {
@@ -88,7 +165,11 @@ const UITypeahead = ({
 
         const button = {
             element: 'button',
-            text: 'Show All'
+            text: 'Open list of options',
+            ['aria-controls']: 'js-typeahead',
+            tabindex: -1,
+            type: 'button',
+            onClick: typeaheadButtonClick
         };
 
         const typeaheadField = {
@@ -98,10 +179,12 @@ const UITypeahead = ({
 
         const typeaheadDropdown = {
             className: 'c-typeahead__dropdown',
-            children: [{
-                element: 'ul',
-                children: generateOptions(options)
-            }]
+            element: 'ul',
+            id: 'js-typeahead',
+            tabindex: -1,
+            role: 'listbox',
+            ['aria-expanded']: false,
+            children: generateOptions(options)
         };
 
         return createEl({
@@ -110,10 +193,17 @@ const UITypeahead = ({
         });
     }
 
-    function extractSelect(typeahead) {
-        const select = typeahead.children[1];
+    /**
+     * @function extractSelect
+     * @desc Grabs details from the select and label in the dom
+     * and convert the relevant parts into an object.
+     * @param {node} formControl the dom node containing the form elements
+     * @return {object} parts of the dom node we need
+     */
+    function extractSelect(formControl) {
+        const select = formControl.children[1];
 
-        const label = typeahead.children[0];
+        const label = formControl.children[0];
 
         return {
             id: select.id,
@@ -134,9 +224,6 @@ const UITypeahead = ({
             return false;
         }
 
-        // Add body element to the DOM object
-        DOM.page = qa('body')[0];
-
         DOM.typeaheads.forEach(typeahead => {
 
             // Get details of existing element
@@ -144,12 +231,6 @@ const UITypeahead = ({
 
             // Create its replacement
             const newTypeahead = createTypeaheadElement(selectWithLabel);
-
-            // Add accessibility to typeahead
-            // addTypeaheadA11y(typeahead);
-
-            // Set up event listeners for triggering typeahead
-            // bindTriggerEvents(typeahead);
 
             // Switch out old select with our awesome typeahead component
             typeahead.parentNode.replaceChild(newTypeahead, typeahead);
