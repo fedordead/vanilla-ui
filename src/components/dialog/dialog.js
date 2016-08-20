@@ -120,7 +120,7 @@ const UIDialog = ({
     /**
      * @function openDialog
      * @desc sets up dialog and state ready to be shown
-     * @param {node} dialog
+     * @param {Event} e
      */
     function openDialog(e) {
         // Get trigger button so focus can be returned to it later
