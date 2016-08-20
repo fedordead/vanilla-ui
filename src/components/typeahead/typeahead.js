@@ -18,7 +18,9 @@ const UITypeahead = ({
         typeahead = '.js-typeahead',
         toggleBtn = '.js-typeahead-btn',
         readyClass = defaultClassNames.IS_READY,
-        activeClass = defaultClassNames.IS_ACTIVE
+        activeClass = defaultClassNames.IS_ACTIVE,
+        noMatchesText = 'No Matches',
+        noMatchesClass = 'no-matches'
     } = {}) => {
 
     // Stores all the dom nodes for the module
@@ -76,11 +78,17 @@ const UITypeahead = ({
         // create subset of options based on word typed
         state.subSetOptions = state.fullOptions.filter(val => val.innerText.toLowerCase().includes(inputValue));
 
+        // Fall back for no matches
+        if (!state.subSetOptions.length) {
+            state.subSetOptions = [createEl(createDropdownItem({text: noMatchesText, className: noMatchesClass}))];
+        }
+
         // create new dropdown element with same props
         const dropDown = createEl(generateDropdown());
 
         dropDown.classList.add(defaultClassNames.IS_ACTIVE);
         // add new subset to the new dropdown
+
         state.subSetOptions.forEach(option => dropDown.appendChild(option));
 
         // Switch out old dropdown list with updated nodeList
@@ -144,7 +152,7 @@ const UITypeahead = ({
      * @param {string} params.id
      * @param {string} params.text
      */
-    const createDropdownItem = ({value, name = 'typer', id, text}) => {
+    const createDropdownItem = ({value, name = 'typer', id, text, className}) => {
 
         return {
             id: text,
@@ -152,7 +160,8 @@ const UITypeahead = ({
             element: 'li',
             role: 'option',
             text,
-            tabindex: -1
+            tabindex: -1,
+            className
         };
     };
 
