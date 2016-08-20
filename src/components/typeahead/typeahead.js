@@ -28,11 +28,13 @@ const UITypeahead = ({
 
     // Keeps track of current state
     let state = {
+        currentTypeahead: null,
         currentInput: null,
         currentDropdown: null,
         focusableElements: null,
         isDropdownOpen: false,
-        currentTypedWord: ''
+        fullOptions: [],
+        subSetOptions: []
     };
 
 
@@ -56,6 +58,7 @@ const UITypeahead = ({
             if (e.keyCode === keyCodes.ESCAPE) {
                 // close typeahead
                 // remove event listener for keyhandler
+                // clear state
             } else if (e.keyCode === keyCodes.UP_ARROW ||
                 e.keyCode === keyCodes.DOWN_ARROW) {
                 // move up and down list
@@ -63,11 +66,28 @@ const UITypeahead = ({
         }
 
         if (alphaNumeric) {
-            // reduce list
+            updateOptions(e.target.value + e.key);
         }
 
     }
 
+    function updateOptions(inputValue) {
+
+        // create subset of options based on word typed
+        state.subSetOptions = state.fullOptions.filter(val => val.innerText.includes(inputValue));
+
+        // create new dropdown element with same props
+        const dropDown = createEl(generateDropdown());
+        dropDown.classList.add(defaultClassNames.IS_ACTIVE);
+        // add new subset to the new dropdown
+        state.subSetOptions.forEach(option => dropDown.appendChild(option));
+
+        // Switch out old dropdown list with updated nodeList
+        state.currentDropdown.parentNode.replaceChild(
+            dropDown,
+            state.currentDropdown
+        );
+    }
 
     /**
      * @function setCurrentTypeahead
@@ -78,11 +98,14 @@ const UITypeahead = ({
         // Get trigger input so focus can be returned to it later
         const input = e.target;
         // Get dialog that should be opened
-        const dropdown = document.getElementById(input.getAttribute('aria-owns')) || document.getElementById(input.getAttribute('aria-controls'));
+        const dropdown =
+            document.getElementById(input.getAttribute('aria-owns')) ||
+            document.getElementById(input.getAttribute('aria-controls'));
 
         //  Update State
         state.currentInput = input;
         state.currentDropdown = dropdown;
+        state.fullOptions = [].slice.call(dropdown.children);
     }
 
 
@@ -122,13 +145,19 @@ const UITypeahead = ({
     };
 
 
-    /**
-     * @function generateOptions
-     * @desc Options to select from
-     */
-    function generateOptions(options) {
-        return nodeMap(options, createDropdownItem);
+    function generateDropdown(options) {
+
+        return {
+            className: 'c-typeahead__dropdown',
+            element: 'ul',
+            id: 'js-typeahead',
+            tabindex: -1,
+            role: 'listbox',
+            ['aria-expanded']: false,
+            children: options ? nodeMap(options, createDropdownItem) : null
+        };
     }
+
 
     function typeaheadButtonClick(e) {
         setCurrentTypeahead(e);
@@ -177,19 +206,9 @@ const UITypeahead = ({
             children: [textInputLabel, textInput, button]
         };
 
-        const typeaheadDropdown = {
-            className: 'c-typeahead__dropdown',
-            element: 'ul',
-            id: 'js-typeahead',
-            tabindex: -1,
-            role: 'listbox',
-            ['aria-expanded']: false,
-            children: generateOptions(options)
-        };
-
         return createEl({
             className: 'c-typeahead',
-            children: [typeaheadField, typeaheadDropdown]
+            children: [typeaheadField, generateDropdown(options)]
         });
     }
 
