@@ -55,23 +55,60 @@ const UITypeahead = ({
                 alphaNumeric) {
                 showTypeahead(state.currentDropdown);
             }
+
+            if (alphaNumeric) {
+                updateOptions(e.target.value + e.key);
+            }
+
+        // Dropdown already open:
         } else {
 
-            if (e.keyCode === keyCodes.ESCAPE) {
+            if (e.keyCode === keyCodes.ESCAPE ||
+                e.keyCode === keyCodes.BACKSPACE && e.target.value.length === 1) {
                 // close typeahead
-                // remove event listener for keyhandler
-                // clear state
-            } else if (e.keyCode === keyCodes.UP_ARROW ||
-                e.keyCode === keyCodes.DOWN_ARROW) {
-                // move up and down list
+            } else if (
+                e.keyCode === keyCodes.UP_ARROW ||
+                e.keyCode === keyCodes.DOWN_ARROW ||
+                (e.keyCode === keyCodes.UP_ARROW && e.altKey) ||
+                (e.keyCode === keyCodes.DOWN_ARROW && e.altKey)
+                ) {
+                // Move up and down list
+                traverseList(e);
+            } else if (alphaNumeric) {
+                updateOptions(e.target.value + e.key);
             }
         }
 
-        if (alphaNumeric) {
-            updateOptions(e.target.value + e.key);
+    }
+
+    function traverseList(e) {
+
+        const currentSelected = state.currentDropdown.getElementsByClassName('is-selected')[0];
+
+        if (currentSelected) {
+            currentSelected.classList.remove('is-selected');
         }
 
-    }
+        const children = state.currentDropdown.children;
+
+        // If up key and first or no element selected, select last element
+        if (e.keyCode === keyCodes.UP_ARROW && (!currentSelected || !currentSelected.previousSibling)) {
+
+            children[children.length - 1].classList.add('is-selected');
+
+        // If down key and last or no element selected, select first element
+        } else if (e.keyCode === keyCodes.DOWN_ARROW && (!currentSelected || !currentSelected.nextSibling)) {
+            children[0].classList.add('is-selected');
+
+        // If up key select sibling prev
+        } else if (e.keyCode === keyCodes.UP_ARROW) {
+            currentSelected.previousSibling.classList.add('is-selected');
+
+        // Fall back to Down key, selects item below
+        } else {
+            currentSelected.nextSibling.classList.add('is-selected');
+        }
+    };
 
     function updateOptions(inputValue) {
 
