@@ -109,9 +109,17 @@ const UITypeahead = ({
         //  Update State
         state.currentInput = input;
         state.currentDropdown = dropdown;
-        state.fullOptions = [].slice.call(dropdown.children);
+        // Return alphabetical array of options
+        state.fullOptions = [].slice.call(dropdown.children).sort((obj1, obj2) => obj1.innerText > obj2.innerText);
+
+        state.subSetOptions = setSubSetOptions(state.fullOptions);
     }
 
+    const MAX_RESULTS = 2;
+
+    function setSubSetOptions(fullOptions) {
+        return [].slice.call(fullOptions, MAX_RESULTS);
+    }
 
     /**
      * @function showTypeahead
