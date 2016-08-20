@@ -34,3 +34,30 @@ body {
 .dialog.is-active {
     display: block !important;
 }
+
+.c-typeahead__dropdown {
+    display: none;
+}
+
+.c-typeahead__dropdown.is-active {
+    display: block !important;
+}
+
+.c-typeahead__dropdown {
+    border: 1px solid;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.c-typeahead__dropdown li {
+    cursor: pointer;
+    padding: 2px 10px;
+}
+
+.c-typeahead__dropdown li:hover,
+.c-typeahead__dropdown li.is-selected,
+.c-typeahead__dropdown li:focus {
+    background-color: pink;
+    outline: none;
+}
