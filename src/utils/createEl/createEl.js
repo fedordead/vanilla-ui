@@ -21,9 +21,14 @@ const createEl = ({
     // Setup base element
     let el = document.createElement(element);
 
-    // adds classes
+    // Adds classes
     if (className) {
-        el.classList.add(className);
+        // Converts string to array so spread will work
+        if (typeof className === 'string') {
+            className = [className];
+        }
+
+        el.classList.add(...className);
     }
 
     if (text) {
@@ -35,7 +40,13 @@ const createEl = ({
     // Adds other attributes e.g id, type, role etc provided
     if (attributes !== {}) {
         for (let key in attributes) {
-            el.setAttribute(key, attributes[key]);
+
+            // check if attribute is an event listener
+            if (key.substring(0, 2) === 'on') {
+                el.addEventListener(key.substring(2).toLowerCase(), attributes[key]);
+            } else {
+                el.setAttribute(key, attributes[key]);
+            }
         }
     }
 
