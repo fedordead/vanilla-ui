@@ -33,6 +33,7 @@ const UITypeahead = ({
         currentInput: null,
         currentDropdown: null,
         currentHiddenInput: null,
+        currentHighlighted: null,
         isDropdownOpen: false,
         fullOptions: [],
         subSetOptions: []
@@ -73,6 +74,8 @@ const UITypeahead = ({
                 ) {
                 // Move up and down list
                 traverseList(e);
+            } else if (e.keyCode === keyCodes.ENTER) {
+                handleEnter(e);
             } else if (alphaNumeric) {
                 updateOptions(e.target.value + e.key);
             }
@@ -82,31 +85,36 @@ const UITypeahead = ({
 
     function traverseList(e) {
 
-        const currentSelected = state.currentDropdown.getElementsByClassName('is-selected')[0];
-
-        if (currentSelected) {
-            currentSelected.classList.remove('is-selected');
+        if (state.currentHighlighted) {
+            state.currentHighlighted.classList.remove('is-selected');
         }
+
+        let newSelected;
 
         const children = state.currentDropdown.children;
 
         // If up key and first or no element selected, select last element
-        if (e.keyCode === keyCodes.UP_ARROW && (!currentSelected || !currentSelected.previousSibling)) {
+        if (e.keyCode === keyCodes.UP_ARROW && (!state.currentHighlighted || !state.currentHighlighted.previousSibling)) {
 
-            children[children.length - 1].classList.add('is-selected');
+            newSelected = children[children.length - 1];
 
         // If down key and last or no element selected, select first element
-        } else if (e.keyCode === keyCodes.DOWN_ARROW && (!currentSelected || !currentSelected.nextSibling)) {
-            children[0].classList.add('is-selected');
+        } else if (e.keyCode === keyCodes.DOWN_ARROW && (!state.currentHighlighted || !state.currentHighlighted.nextSibling)) {
+
+            newSelected = children[0];
 
         // If up key select sibling prev
         } else if (e.keyCode === keyCodes.UP_ARROW) {
-            currentSelected.previousSibling.classList.add('is-selected');
+            newSelected = state.currentHighlighted.previousSibling;
 
         // Fall back to Down key, selects item below
         } else {
-            currentSelected.nextSibling.classList.add('is-selected');
+            newSelected = state.currentHighlighted.nextSibling;
         }
+
+        newSelected.classList.add('is-selected');
+        state.currentHighlighted = newSelected;
+
     };
 
     function updateOptions(inputValue) {
@@ -304,13 +312,45 @@ const UITypeahead = ({
     }
 
 
-    function selectOption(e) {
+    function handleClick(e) {
         setValue(e.target);
+        closeDropdown();
+    }
+
+    function handleEnter(e) {
+        setValue(state.currentHighlighted);
     }
 
     function setValue(option) {
         state.currentInput.value = option.innerText;
         // state.currentHiddenInput.value = option.dataset.value;
+        closeDropdown();
+    }
+
+
+    /**
+     * @function closeDropdown
+     * @desc adds aria attributes and hides typeahead, removing backdrop if needed
+     * @param {node} typeahead
+     */
+    function closeDropdown() {
+
+        //  show container and focus the typeahead
+        state.currentDropdown.setAttribute('aria-hidden', true);
+        state.currentDropdown.removeAttribute('tabindex');
+
+        // Unbind events
+        // unbindKeyCodeEvents();
+        // if (!isModal && DOM.backdrop) {
+        //     unbindBackdropEvents();
+        // }
+
+        //  Remove active state hook class
+        state.currentDropdown.classList.remove(activeClass);
+
+        // Return focus to input that opened the typeahead, update state
+        state.currentInput.focus();
+        state.isDropdownOpen = false;
     }
 
 
@@ -320,7 +360,7 @@ const UITypeahead = ({
      * @param {node} dialog
      */
     function bindClickEvents(dropdown) {
-        dropdown.addEventListener('click', selectOption);
+        dropdown.addEventListener('click', handleClick);
     }
 
     /**
