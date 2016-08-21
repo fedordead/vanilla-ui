@@ -115,6 +115,8 @@ const UITypeahead = ({
         newSelected.classList.add(defaultClassNames.IS_SELECTED);
         state.currentHighlighted = newSelected;
 
+        // display selected value in text field
+        state.currentInput.value = state.currentHighlighted.innerText;
     };
 
     function updateOptions(inputValue) {
