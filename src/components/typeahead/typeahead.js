@@ -32,6 +32,7 @@ const UITypeahead = ({
     let state = {
         currentInput: null,
         currentDropdown: null,
+        currentHiddenInput: null,
         isDropdownOpen: false,
         fullOptions: [],
         subSetOptions: []
@@ -173,6 +174,8 @@ const UITypeahead = ({
         dropdown.setAttribute('aria-hidden', false);
         state.isDropdownOpen = true;
 
+        bindClickEvents(dropdown);
+
         //  Add class to make dialog visible
         dropdown.classList.add(activeClass);
     }
@@ -298,6 +301,26 @@ const UITypeahead = ({
             options: select.options,
             text: label.innerText
         };
+    }
+
+
+    function selectOption(e) {
+        setValue(e.target);
+    }
+
+    function setValue(option) {
+        state.currentInput.value = option.innerText;
+        // state.currentHiddenInput.value = option.dataset.value;
+    }
+
+
+    /**
+     * @function bindClickEvents
+     * @desc adds click event to the dropdown
+     * @param {node} dialog
+     */
+    function bindClickEvents(dropdown) {
+        dropdown.addEventListener('click', selectOption);
     }
 
     /**
