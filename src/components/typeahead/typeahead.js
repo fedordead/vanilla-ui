@@ -30,10 +30,8 @@ const UITypeahead = ({
 
     // Keeps track of current state
     let state = {
-        currentTypeahead: null,
         currentInput: null,
         currentDropdown: null,
-        focusableElements: null,
         isDropdownOpen: false,
         fullOptions: [],
         subSetOptions: []
@@ -42,7 +40,7 @@ const UITypeahead = ({
 
     /**
      * @function handleKeyPress
-     * @desc Checks to see if escape (key 27) has been pressed and dialog not modal
+     * @desc Checks to see which key has been pressed and carries out an action depending
      * @param {Event} e
      */
     function handleKeyPress(e) {
@@ -228,6 +226,16 @@ const UITypeahead = ({
      */
     function createTypeaheadElement({id, text, name, options}) {
 
+        // This hidden input takes the properties of
+        // the replaced `<select>` element.
+        const hiddenInput = {
+            element: 'input',
+            type: 'hidden',
+            id, // <select> Id
+            name // <select> name
+        };
+
+        // The type box
         const textInput = {
             element: 'input',
             type: 'text',
@@ -240,7 +248,8 @@ const UITypeahead = ({
             ['aria-owns']: 'js-typeahead',
             tabindex: 0,
             onKeydown: handleKeyPress,
-            onFocus: setCurrentTypeahead
+            onFocus: setCurrentTypeahead,
+            onBlur: () => {}
         };
 
         const textInputLabel = {
@@ -259,9 +268,10 @@ const UITypeahead = ({
             onClick: typeaheadButtonClick
         };
 
+        // Wrapper for the non-dropdown elements
         const typeaheadField = {
             className: 'c-typeahead__field',
-            children: [textInputLabel, textInput, button]
+            children: [textInputLabel, textInput, button, hiddenInput]
         };
 
         return createEl({
