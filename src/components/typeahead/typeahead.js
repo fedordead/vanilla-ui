@@ -65,7 +65,7 @@ const UITypeahead = ({
 
             if (e.keyCode === keyCodes.ESCAPE ||
                 e.keyCode === keyCodes.BACKSPACE && e.target.value.length === 1) {
-                // close typeahead
+                closeDropdown();
             } else if (
                 e.keyCode === keyCodes.UP_ARROW ||
                 e.keyCode === keyCodes.DOWN_ARROW ||
