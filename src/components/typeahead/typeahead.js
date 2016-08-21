@@ -86,7 +86,7 @@ const UITypeahead = ({
     function traverseList(e) {
 
         if (state.currentHighlighted) {
-            state.currentHighlighted.classList.remove('is-selected');
+            state.currentHighlighted.classList.remove(defaultClassNames.IS_SELECTED);
         }
 
         let newSelected;
@@ -112,7 +112,7 @@ const UITypeahead = ({
             newSelected = state.currentHighlighted.nextSibling;
         }
 
-        newSelected.classList.add('is-selected');
+        newSelected.classList.add(defaultClassNames.IS_SELECTED);
         state.currentHighlighted = newSelected;
 
     };

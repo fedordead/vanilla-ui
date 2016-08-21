@@ -17,6 +17,7 @@ export const defaultClassNames = {
     IS_ACTIVE: 'is-active',
     IS_HIDDEN: 'is-hidden',
     IS_READY: 'is-ready',
+    IS_SELECTED: 'is-selected',
     NO_BACKDROP: 'no-backdrop',
     DIALOG_BACKDROP: 'dialog-backdrop'
 };
