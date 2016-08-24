@@ -7,11 +7,10 @@
  * @param {object} attributes any other attributes passed in.  Must be provided in camelcase
  * @return {node} - Element with all applied attributes.
  */
-
 const createEl = ({
-        element = 'div',
-        className,
-        ...attributes
+    element = 'div',
+    className,
+    ...attributes
     } = {}) => {
 
     // Setup base element
