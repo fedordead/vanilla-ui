@@ -3,6 +3,7 @@ import {keyCodes, defaultClassNames, NATIVELY_FOCUSABLE_ELEMENTS} from '../../co
 import createEl from '../../utils/createEl';
 import defer from '../../utils/defer';
 import qa from '../../utils/qa';
+import trapFocus from '../../utils/trapFocus';
 
 
 /**
@@ -113,7 +114,7 @@ const VUIDialog = ({
         // Get trigger button so focus can be returned to it later
         const button = e.target;
         // Get dialog that should be opened
-        const dialog = document.getElementById(button.getAttribute('aria-controls'));
+        const dialog = document.getElementById(button.getAttribute('data-controls-modal'));
 
         //  Update State
         state.currentOpenButton = button;
@@ -135,7 +136,7 @@ const VUIDialog = ({
         //  Grabs elements that are focusable inside this dialog instance.
         state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
 
-        //  Focus first element if exists, otherwise focus dialog element
+        //  Set focus to first element, fallback to Dialog.
         if (state.focusableElements.length) {
             state.focusableElements[0].focus();
         } else {
@@ -233,12 +234,16 @@ const VUIDialog = ({
 
     /**
      * @function handleKeyPress
-     * @desc Checks to see if escape (key 27) has been pressed and dialog not dialog
+     * @desc Checks to if Esc or Tab key have been pressed
      * @param {Event} e
      */
     function handleKeyPress(e) {
         if (e.keyCode === keyCodes.ESCAPE && !isModal && !isAlert) {
             hideDialog(state.currentDialog);
+        }
+
+        if (e.keyCode === keyCodes.TAB && !isModal) {
+            trapFocus(e, state.focusableElements);
         }
     }
 
