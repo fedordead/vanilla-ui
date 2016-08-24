@@ -9,19 +9,18 @@
  * @param {object} ...attributes any other attributes passed in.  Must be provided in camelcase
  * @return {node} - Element with all applied attributes.
  */
-
 const createEl = ({
-        element = 'div',
-        children,
-        className,
-        text,
-        ...attributes
+    element = 'div',
+    children,
+    className,
+    text,
+    ...attributes
     } = {}) => {
 
     // Setup base element
     let el = document.createElement(element);
 
-    // Adds classes
+    // adds classes
     if (className) {
         // Converts string to array so spread will work
         if (typeof className === 'string') {
@@ -45,9 +44,9 @@ const createEl = ({
             if (key.substring(0, 2) === 'on') {
                 el.addEventListener(key.substring(2).toLowerCase(), attributes[key]);
             } else {
-                el.setAttribute(key, attributes[key]);
-            }
+            el.setAttribute(key, attributes[key]);
         }
+    }
     }
 
     // Create new element for each child and append

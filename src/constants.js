@@ -19,7 +19,7 @@ export const defaultClassNames = {
     IS_READY: 'is-ready',
     IS_SELECTED: 'is-selected',
     NO_BACKDROP: 'no-backdrop',
-    DIALOG_BACKDROP: 'dialog-backdrop'
+    BACKDROP: 'dialog-backdrop'
 };
 
 

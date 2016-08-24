@@ -1,3 +1,3 @@
-import dialog from './dialog';
+import VUIDialog from './dialog';
 
-export default dialog;
+export default VUIDialog;
