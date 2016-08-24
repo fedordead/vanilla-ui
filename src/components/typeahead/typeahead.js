@@ -80,8 +80,8 @@ const UITypeahead = ({
                 updateOptions(e.target.value + e.key);
             }
         }
-
     }
+
 
     function traverseList(e) {
 
@@ -94,12 +94,14 @@ const UITypeahead = ({
         const children = state.currentDropdown.children;
 
         // If up key and first or no element selected, select last element
-        if (e.keyCode === keyCodes.UP_ARROW && (!state.currentHighlighted || !state.currentHighlighted.previousSibling)) {
+        if (e.keyCode === keyCodes.UP_ARROW &&
+           (!state.currentHighlighted || !state.currentHighlighted.previousSibling)) {
 
             newSelected = children[children.length - 1];
 
         // If down key and last or no element selected, select first element
-        } else if (e.keyCode === keyCodes.DOWN_ARROW && (!state.currentHighlighted || !state.currentHighlighted.nextSibling)) {
+        } else if (e.keyCode === keyCodes.DOWN_ARROW &&
+                  (!state.currentHighlighted || !state.currentHighlighted.nextSibling)) {
 
             newSelected = children[0];
 
@@ -119,6 +121,7 @@ const UITypeahead = ({
         state.currentInput.value = state.currentHighlighted.innerText;
     };
 
+
     function updateOptions(inputValue) {
 
         // create subset of options based on word typed
@@ -126,7 +129,12 @@ const UITypeahead = ({
 
         // Fall back for no matches
         if (!state.subSetOptions.length) {
-            state.subSetOptions = [createEl(createDropdownItem({text: noMatchesText, className: noMatchesClass}))];
+            state.subSetOptions = [
+                createEl(createDropdownItem({
+                    text: noMatchesText,
+                    className: noMatchesClass})
+                )
+            ];
         }
 
         // create new dropdown element with same props
@@ -153,8 +161,14 @@ const UITypeahead = ({
      * @param {node} typeahead
      */
     function setCurrentTypeahead(e) {
-        // Get trigger input so focus can be returned to it later
-        const input = e.target;
+
+        // if the instance of typeahead already exists, don't reinstantiate
+        if (state.currentInput) {
+            return;
+        }
+
+        // Get trigger input so focus can be returned to it later.  || e for when element is passed from button
+        const input = e.target || e;
         // Get dialog that should be opened
         const dropdown =
             document.getElementById(input.getAttribute('aria-owns')) ||
@@ -227,10 +241,25 @@ const UITypeahead = ({
         };
     }
 
+    function removeTypeahead(e) {
+
+        console.dir(e.target);
+    }
 
     function typeaheadButtonClick(e) {
-        setCurrentTypeahead(e);
-        showTypeahead(state.currentDropdown);
+        if (!state.currentDropdown) {
+            setCurrentTypeahead(e.target.previousSibling);
+        }
+
+        if (state.isDropdownOpen) {
+            closeDropdown();
+        } else {
+            showTypeahead(state.currentDropdown);
+        }
+
+        //return focus to input
+        state.currentInput.focus();
+
     };
 
     /**
@@ -262,7 +291,7 @@ const UITypeahead = ({
             tabindex: 0,
             onKeydown: handleKeyPress,
             onFocus: setCurrentTypeahead,
-            onBlur: () => {}
+            onBlur: removeTypeahead
         };
 
         const textInputLabel = {
@@ -275,6 +304,7 @@ const UITypeahead = ({
         const button = {
             element: 'button',
             text: 'Open list of options',
+            className: 'c-typeahead__button',
             ['aria-controls']: 'js-typeahead',
             tabindex: -1,
             type: 'button',
@@ -297,13 +327,13 @@ const UITypeahead = ({
      * @function extractSelect
      * @desc Grabs details from the select and label in the dom
      * and convert the relevant parts into an object.
-     * @param {node} formControl the dom node containing the form elements
+     * @param {node} node the dom node containing the form elements
      * @return {object} parts of the dom node we need
      */
-    function extractSelect(formControl) {
-        const select = formControl.children[1];
+    function extractSelect(node) {
+        const select = node.children[1];
 
-        const label = formControl.children[0];
+        const label = node.children[0];
 
         return {
             id: select.id,
@@ -341,16 +371,10 @@ const UITypeahead = ({
         state.currentDropdown.setAttribute('aria-hidden', true);
         state.currentDropdown.removeAttribute('tabindex');
 
-        // Unbind events
-        // unbindKeyCodeEvents();
-        // if (!isModal && DOM.backdrop) {
-        //     unbindBackdropEvents();
-        // }
-
         //  Remove active state hook class
         state.currentDropdown.classList.remove(activeClass);
 
-        // Return focus to input that opened the typeahead, update state
+        // Return focus to input that opened the typeahead, close dropdown
         state.currentInput.focus();
         state.isDropdownOpen = false;
     }
