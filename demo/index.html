@@ -9,29 +9,25 @@
 
     <div class="main-content">
         <h1>Vanilla UI—Dialog</h1>
-        <button class="js-dialog-btn" type="button">Open dialog 1</button>
-        <button class="js-dialog-btn-2" type="button">Open dialog 2</button>
+        <button class="js-dialog-btn-open" type="button" data-controls-modal="my-dialog">Open dialog 1</button>
+        <button class="js-dialog-btn-open-2" type="button" data-controls-modal="another-dialog">Open dialog 2</button>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia inventore illum dignissimos quidem, porro odio quo eaque suscipit velit reprehenderit, possimus earum magnam voluptates ipsum necessitatibus cupiditate. Exercitationem eaque, quisquam.</p>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia inventore illum dignissimos quidem, porro odio quo eaque suscipit velit reprehenderit, possimus earum magnam voluptates ipsum necessitatibus cupiditate. Exercitationem eaque, quisquam.</p>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia inventore illum dignissimos quidem, porro odio quo eaque suscipit velit reprehenderit, possimus earum magnam voluptates ipsum necessitatibus cupiditate. Exercitationem eaque, quisquam.</p>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia inventore illum dignissimos quidem, porro odio quo eaque suscipit velit reprehenderit, possimus earum magnam voluptates ipsum necessitatibus cupiditate. Exercitationem eaque, quisquam.</p>
     </div>
 
-    <div class="dialog-container js-dialog">
-        <div class="dialog">
-            <h3>Hello!</h3>
-            <p>I am dialog 1 content. I can be closed with both escape and buttons.</p>
-            <button class="js-dialog-close-btn">Close dialog 1</button>
-        </div>
+    <div id="my-dialog" class="dialog js-dialog">
+        <h3>Hello!</h3>
+        <p>I am dialog 1 content. I can be closed with both escape and buttons.</p>
+        <button class="js-dialog-close-btn">Close dialog 1</button>
     </div>
 
-    <div class="dialog-container js-dialog-2">
-        <div class="dialog">
-            <h3>Oops!</h3>
-            <p>Deadly Neurotoxin gas released!</p>
-            <p>PS: I'm a modal, so no escape for you!</p>
-            <button class="js-dialog-close-btn-2">You got me!</button>
-        </div>
+    <div id="another-dialog" class="dialog js-dialog-2">
+        <h3>Oops!</h3>
+        <p>Deadly Neurotoxin gas released!</p>
+        <p>PS: I'm a modal, so no escape for you!</p>
+        <button class="js-dialog-close-btn-2">You got me!</button>
     </div>
 
     <script src="../lib/vanilla-ui.js"></script>

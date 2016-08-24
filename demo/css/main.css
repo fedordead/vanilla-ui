@@ -8,42 +8,29 @@ body {
     font-family: sans-serif;
 }
 
-.dialog-container,
 .dialog-backdrop {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    position: fixed;
-    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    bottom: 0;
     left: 0;
     overflow: hidden;
+    position: fixed;
+    right: 0;
     top: 0;
-    width: 100%;
-    z-index: 100;
-}
-
-.dialog-container {
-    background-color: green;
-    pointer-events: none;
-}
-
-.dialog-container.no-backdrop {
-    background-color: transparent;
-}
-
-.dialog-backdrop {
-    z-index: 99;
+    z-index: 1;
 }
 
 .dialog {
     background-color: #fff;
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.4);
+    display: none;
+    left: calc(50vw - 13em);
     padding: 3em;
-    pointer-events: auto;
-    position: relative;
+    position: fixed;
+    top: 20vh;
     width: 26em;
+    z-index: 2;
 }
 
-.is-hidden {
-    display: none !important;
+.dialog.is-active {
+    display: block !important;
 }

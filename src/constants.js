@@ -12,7 +12,24 @@ export const keyCodes = {
 
 // Classnames likely to be shared across modules
 export const defaultClassNames = {
+    IS_ACTIVE: 'is-active',
     IS_HIDDEN: 'is-hidden',
+    IS_READY: 'is-ready',
     NO_BACKDROP: 'no-backdrop',
-    DIALOG_BACKDROP: 'dialog-backdrop'
+    BACKDROP: 'dialog-backdrop'
 };
+
+
+export const NATIVELY_FOCUSABLE_ELEMENTS = [
+    'a[href]',
+    'area[href]',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    'button:not([disabled])',
+    'iframe',
+    'object',
+    'embed',
+    '[contenteditable]',
+    '[tabindex]:not([tabindex^="-"])'
+];
