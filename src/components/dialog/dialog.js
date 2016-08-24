@@ -114,7 +114,7 @@ const VUIDialog = ({
         // Get trigger button so focus can be returned to it later
         const button = e.target;
         // Get dialog that should be opened
-        const dialog = document.getElementById(button.getAttribute('aria-controls'));
+        const dialog = document.getElementById(button.getAttribute('data-controls-modal'));
 
         //  Update State
         state.currentOpenButton = button;
