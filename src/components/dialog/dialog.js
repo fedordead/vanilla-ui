@@ -6,16 +6,16 @@ import qa from '../../utils/qa';
 
 
 /**
- * @function UIDialog
+ * @function VUIDialog
  * @version 0.0.2
- * @desc Main UIDialog function. Creates instances of the dialog based on
+ * @desc Main VUIDialog function. Creates instances of the dialog based on
  * parameters passed in.
  * @param {object} settings
  */
-const UIDialog = ({
+const VUIDialog = ({
         dialog = '.js-dialog',
-        openBtn = '.js-dialog-btn',
-        closeBtn = '.js-dialog-close-btn',
+        openBtn = '.js-dialog-btn-open',
+        closeBtn = '.js-dialog-btn-close',
         isModal = false,
         isAlert = false,
         readyClass = defaultClassNames.IS_READY,
@@ -23,16 +23,16 @@ const UIDialog = ({
         showBackdrop = true
     } = {}) => {
 
-    // Stores all the dom nodes for the module
+    // Stores all the constant dom nodes for the component regardless of instance.
     let DOM = {
         dialogs: qa(dialog)
     };
 
-    // Keeps track of current state
+    // Keeps track of current instance of dialog.
     let state = {
         currentOpenButton: null,
         currentDialog: null,
-        focusableElements: null //  elements within modal
+        focusableElements: null
     };
 
 
@@ -72,19 +72,7 @@ const UIDialog = ({
      */
     function createBackdrop() {
         // Create the backdrop
-        DOM.backdrop = createEl({id: 'hawk', className: defaultClassNames.DIALOG_BACKDROP});
-
-        addBackdropA11y(DOM.backdrop);
-    }
-
-
-    /**
-     * @function addBackdropA11y
-     * @desc Applies relevant roles and attributes to the backdrop
-     * @param {node} backdrop
-     */
-    function addBackdropA11y(backdrop) {
-        backdrop.setAttribute('aria-hidden', true);
+        DOM.backdrop = createEl({className: defaultClassNames.BACKDROP});
     }
 
 
@@ -109,8 +97,8 @@ const UIDialog = ({
     function bindOpenEvents(dialog) {
         const id = dialog.getAttribute('id');
 
-        // Grab all buttons which open this instance of the modal
-        const openButtons = qa(`${openBtn}[aria-controls="${id}"]`);
+        // Grab all buttons which open this instance of the dialog
+        const openButtons = qa(`${openBtn}[data-controls-modal="${id}"]`);
 
         openButtons.forEach(button => button.addEventListener('click', openDialog));
     }
@@ -118,8 +106,8 @@ const UIDialog = ({
 
     /**
      * @function openDialog
-     * @desc sets up dialog and state ready to be shown
-     * @param {node} dialog
+     * @desc Sets up dialog and state ready to be shown.  Is triggered by user clicking on open button
+     * @param {Event} e
      */
     function openDialog(e) {
         // Get trigger button so focus can be returned to it later
@@ -137,17 +125,17 @@ const UIDialog = ({
 
     /**
      * @function showDialog
-     * @desc Sets up focusable elements, close and key events and displays modal
+     * @desc Sets up focusable elements, close and key events and displays dialog
      */
     function showDialog(dialog) {
-        //  Focus the modal and remove aria attributes
+        //  Focus the dialog and remove aria attributes
         dialog.setAttribute('tabindex', 1);
         dialog.setAttribute('aria-hidden', false);
 
-        //  Set the first and last focusable elements
+        //  Grabs elements that are focusable inside this dialog instance.
         state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
 
-        //  focus first element if exists, otherwise focus dialog element
+        //  Focus first element if exists, otherwise focus dialog element
         if (state.focusableElements.length) {
             state.focusableElements[0].focus();
         } else {
@@ -177,7 +165,7 @@ const UIDialog = ({
      * @param {node} dialog
      */
     function bindCloseEvents(dialog = state.currentDialog) {
-        // Grab all buttons which open this instance of the modal
+        // Grab all buttons which open this instance of the dialog
         const closeButtons = qa(closeBtn);
 
         closeButtons.forEach(button => button.addEventListener('click', closeDialog));
@@ -186,7 +174,7 @@ const UIDialog = ({
 
     /**
      * @function closeDialog
-     * @desc Sets up dialog ready to be hidden
+     * @desc Bridging function that sets up dialog ready to be hidden
      */
     function closeDialog() {
         hideDialog(state.currentDialog);
@@ -200,7 +188,7 @@ const UIDialog = ({
      */
     function hideDialog(dialog) {
 
-        //  show container and focus the dialog
+        //  Hide dialog for screenreaders and make untabbable
         dialog.setAttribute('aria-hidden', true);
         dialog.removeAttribute('tabindex');
 
@@ -245,11 +233,11 @@ const UIDialog = ({
 
     /**
      * @function handleKeyPress
-     * @desc Checks to see if escape (key 27) has been pressed and dialog not modal
+     * @desc Checks to see if escape (key 27) has been pressed and dialog not dialog
      * @param {Event} e
      */
     function handleKeyPress(e) {
-        if (e.keyCode === keyCodes.ESCAPE && !isModal) {
+        if (e.keyCode === keyCodes.ESCAPE && !isModal && !isAlert) {
             hideDialog(state.currentDialog);
         }
     }
@@ -285,9 +273,9 @@ const UIDialog = ({
         });
     }
 
-    // Initialise UIDialog module
+    // Initialise VUIDialog component
     init();
 };
 
 
-export default UIDialog;
+export default VUIDialog;
