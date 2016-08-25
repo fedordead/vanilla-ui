@@ -78,19 +78,6 @@ const VUIDialog = ({
 
 
     /**
-     * @function addDialogA11y
-     * @desc Applies relevant roles and attributes to the dialog
-     * @param {node} dialog
-     */
-    function addDialogA11y(dialog) {
-        const role = isAlert ? 'alertdialog' : 'dialog';
-
-        dialog.setAttribute('aria-hidden', 'true');
-        dialog.setAttribute('role', role);
-    }
-
-
-    /**
      * @function bindOpenEvents
      * @desc Finds all open buttons and attaches click event listener
      * @param {node} dialog
@@ -267,13 +254,16 @@ const VUIDialog = ({
         }
 
         DOM.dialogs.forEach(dialog => {
-            // Add accessibility to dialog
-            addDialogA11y(dialog);
+
+            // Add aria roles and attributes
+            const role = isAlert ? 'alertdialog' : 'dialog';
+
+            dialog.setAttribute('aria-hidden', 'true');
+            dialog.setAttribute('role', role);
 
             // Set up event listeners for opening dialog
             bindOpenEvents(dialog);
 
-            // Set ready class
             dialog.classList.add(readyClass);
         });
     }
