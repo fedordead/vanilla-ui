@@ -120,16 +120,6 @@ const VUIDialog = ({
         dialog.setAttribute('tabindex', 1);
         dialog.setAttribute('aria-hidden', false);
 
-        //  Grabs elements that are focusable inside this dialog instance.
-        state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
-
-        //  Set focus to first element, fallback to Dialog.
-        if (state.focusableElements.length) {
-            state.focusableElements[0].focus();
-        } else {
-            dialog.focus();
-        }
-
         //  Bind events
         defer(bindKeyCodeEvents);
         defer(bindCloseEvents);
@@ -142,8 +132,18 @@ const VUIDialog = ({
             DOM.page.appendChild(DOM.backdrop);
         }
 
-        //  Add class to make dialog visible
+        //  Grabs elements that are focusable inside this dialog instance.
+        state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
+
+        //  Add class to make dialog visible. Needs to occur before focus.
         dialog.classList.add(activeClass);
+
+        //  Set focus to first element, fallback to Dialog.
+        if (state.focusableElements.length) {
+            state.focusableElements[0].focus();
+        } else {
+            dialog.focus();
+        }
     }
 
 
