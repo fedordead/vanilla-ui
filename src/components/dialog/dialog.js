@@ -86,7 +86,7 @@ const VUIDialog = ({
         const id = dialog.getAttribute('id');
 
         // Grab all buttons which open this instance of the dialog
-        const openButtons = qa(`${openBtn}[data-controls-modal="${id}"]`);
+        const openButtons = qa(`${openBtn}[data-controls-dialog="${id}"]`);
 
         openButtons.forEach(button => button.addEventListener('click', openDialog));
     }
@@ -101,7 +101,7 @@ const VUIDialog = ({
         // Get trigger button so focus can be returned to it later
         const button = e.target;
         // Get dialog that should be opened
-        const dialog = document.getElementById(button.getAttribute('data-controls-modal'));
+        const dialog = document.getElementById(button.getAttribute('data-controls-dialog'));
 
         //  Update State
         state.currentOpenButton = button;
