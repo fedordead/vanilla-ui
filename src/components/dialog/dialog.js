@@ -86,7 +86,7 @@ const VUIDialog = ({
         const id = dialog.getAttribute('id');
 
         // Grab all buttons which open this instance of the dialog
-        const openButtons = qa(`${openBtn}[data-controls-modal="${id}"]`);
+        const openButtons = qa(`${openBtn}[data-controls-dialog="${id}"]`);
 
         openButtons.forEach(button => button.addEventListener('click', openDialog));
     }
@@ -101,9 +101,9 @@ const VUIDialog = ({
         // Get trigger button so focus can be returned to it later
         const button = e.target;
         // Get dialog that should be opened
-        const dialog = document.getElementById(button.getAttribute('data-controls-modal'));
+        const dialog = document.getElementById(button.getAttribute('data-controls-dialog'));
 
-        //  Update State
+        // Update State
         state.currentOpenButton = button;
         state.currentDialog = dialog;
 
@@ -116,21 +116,11 @@ const VUIDialog = ({
      * @desc Sets up focusable elements, close and key events and displays dialog
      */
     function showDialog(dialog) {
-        //  Focus the dialog and remove aria attributes
+        // Focus the dialog and remove aria attributes
         dialog.setAttribute('tabindex', 1);
         dialog.setAttribute('aria-hidden', false);
 
-        //  Grabs elements that are focusable inside this dialog instance.
-        state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
-
-        //  Set focus to first element, fallback to Dialog.
-        if (state.focusableElements.length) {
-            state.focusableElements[0].focus();
-        } else {
-            dialog.focus();
-        }
-
-        //  Bind events
+        // Bind events
         defer(bindKeyCodeEvents);
         defer(bindCloseEvents);
         if (!isModal && DOM.backdrop) {
@@ -142,8 +132,18 @@ const VUIDialog = ({
             DOM.page.appendChild(DOM.backdrop);
         }
 
-        //  Add class to make dialog visible
+        // Grabs elements that are focusable inside this dialog instance.
+        state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
+
+        // Add class to make dialog visible. Needs to occur before focus.
         dialog.classList.add(activeClass);
+
+        // Set focus to first element, fallback to Dialog.
+        if (state.focusableElements.length) {
+            state.focusableElements[0].focus();
+        } else {
+            dialog.focus();
+        }
     }
 
 
@@ -176,7 +176,7 @@ const VUIDialog = ({
      */
     function hideDialog(dialog) {
 
-        //  Hide dialog for screenreaders and make untabbable
+        // Hide dialog for screenreaders and make untabbable
         dialog.setAttribute('aria-hidden', true);
         dialog.removeAttribute('tabindex');
 
@@ -186,7 +186,7 @@ const VUIDialog = ({
             unbindBackdropEvents();
         }
 
-        //  Remove active state hook class
+        // Remove active state hook class
         dialog.classList.remove(activeClass);
 
         // Remove backdrop if needed
