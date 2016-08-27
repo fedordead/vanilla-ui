@@ -103,7 +103,7 @@ const VUIDialog = ({
         // Get dialog that should be opened
         const dialog = document.getElementById(button.getAttribute('data-controls-dialog'));
 
-        //  Update State
+        // Update State
         state.currentOpenButton = button;
         state.currentDialog = dialog;
 
@@ -116,11 +116,11 @@ const VUIDialog = ({
      * @desc Sets up focusable elements, close and key events and displays dialog
      */
     function showDialog(dialog) {
-        //  Focus the dialog and remove aria attributes
+        // Focus the dialog and remove aria attributes
         dialog.setAttribute('tabindex', 1);
         dialog.setAttribute('aria-hidden', false);
 
-        //  Bind events
+        // Bind events
         defer(bindKeyCodeEvents);
         defer(bindCloseEvents);
         if (!isModal && DOM.backdrop) {
@@ -132,13 +132,13 @@ const VUIDialog = ({
             DOM.page.appendChild(DOM.backdrop);
         }
 
-        //  Grabs elements that are focusable inside this dialog instance.
+        // Grabs elements that are focusable inside this dialog instance.
         state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
 
-        //  Add class to make dialog visible. Needs to occur before focus.
+        // Add class to make dialog visible. Needs to occur before focus.
         dialog.classList.add(activeClass);
 
-        //  Set focus to first element, fallback to Dialog.
+        // Set focus to first element, fallback to Dialog.
         if (state.focusableElements.length) {
             state.focusableElements[0].focus();
         } else {
@@ -176,7 +176,7 @@ const VUIDialog = ({
      */
     function hideDialog(dialog) {
 
-        //  Hide dialog for screenreaders and make untabbable
+        // Hide dialog for screenreaders and make untabbable
         dialog.setAttribute('aria-hidden', true);
         dialog.removeAttribute('tabindex');
 
@@ -186,7 +186,7 @@ const VUIDialog = ({
             unbindBackdropEvents();
         }
 
-        //  Remove active state hook class
+        // Remove active state hook class
         dialog.classList.remove(activeClass);
 
         // Remove backdrop if needed
