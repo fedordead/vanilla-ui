@@ -101,6 +101,7 @@ const VUIDialog = ({
     function openDialog(e) {
         // Get trigger button so focus can be returned to it later
         const button = e.target;
+
         // Get dialog that should be opened
         const dialog = document.getElementById(button.getAttribute('data-controls-dialog'));
 
@@ -142,9 +143,8 @@ const VUIDialog = ({
     /**
      * @function bindCloseEvents
      * @desc Finds all close buttons and attaches click event listener
-     * @param {node} dialog
      */
-    function bindCloseEvents(dialog = state.currentDialog) {
+    function bindCloseEvents() {
         // Grab all buttons which open this instance of the dialog
         const closeButtons = qa(closeBtn);
 
@@ -154,8 +154,8 @@ const VUIDialog = ({
 
     /**
      * @function closeDialog
-     * @desc adds aria attributes and hides dialog, removing backdrop if needed
-     * @param {node} dialog
+     * @desc Triggered by user interacting with a close button or in some cases clicking backdrop.
+     * Adds aria attributes and hides dialog, removing backdrop if needed
      */
     function closeDialog() {
 
