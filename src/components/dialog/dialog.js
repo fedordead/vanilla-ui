@@ -62,7 +62,7 @@ const VUIDialog = ({
      */
     function handleBackdropClick(e) {
         if (e.target === DOM.backdrop) {
-            hideDialog(state.currentDialog);
+            closeDialog(state.currentDialog);
         }
     }
 
@@ -94,7 +94,8 @@ const VUIDialog = ({
 
     /**
      * @function openDialog
-     * @desc Sets up dialog and state ready to be shown.  Is triggered by user clicking on open button
+     * @desc Sets up dialog and state ready to be shown. Is triggered by user clicking on open
+     * button. Also sets up focusable elements, close and key events and displays dialog
      * @param {Event} e
      */
     function openDialog(e) {
@@ -107,15 +108,6 @@ const VUIDialog = ({
         state.currentOpenButton = button;
         state.currentDialog = dialog;
 
-        showDialog(dialog);
-    }
-
-
-    /**
-     * @function showDialog
-     * @desc Sets up focusable elements, close and key events and displays dialog
-     */
-    function showDialog(dialog) {
         // Focus the dialog and remove aria attributes
         dialog.setAttribute('tabindex', 1);
         dialog.setAttribute('aria-hidden', false);
@@ -162,19 +154,12 @@ const VUIDialog = ({
 
     /**
      * @function closeDialog
-     * @desc Bridging function that sets up dialog ready to be hidden
-     */
-    function closeDialog() {
-        hideDialog(state.currentDialog);
-    }
-
-
-    /**
-     * @function hideDialog
      * @desc adds aria attributes and hides dialog, removing backdrop if needed
      * @param {node} dialog
      */
-    function hideDialog(dialog) {
+    function closeDialog() {
+
+        const dialog = state.currentDialog;
 
         // Hide dialog for screenreaders and make untabbable
         dialog.setAttribute('aria-hidden', true);
@@ -225,8 +210,13 @@ const VUIDialog = ({
      * @param {Event} e
      */
     function handleKeyPress(e) {
+<<<<<<< Updated upstream
         if (e.keyCode === keyCodes.ESCAPE && !isModal && !isAlert) {
             hideDialog(state.currentDialog);
+=======
+        if (e.keyCode === KEYCODES.escape && !isModal && !isAlert) {
+            closeDialog(state.currentDialog);
+>>>>>>> Stashed changes
         }
 
         if (e.keyCode === keyCodes.TAB && !isModal) {
