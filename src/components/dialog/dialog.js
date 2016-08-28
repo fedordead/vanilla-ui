@@ -88,6 +88,7 @@ const VUIDialog = ({
         // Grab all buttons which open this instance of the dialog
         const openButtons = qa(`${openBtn}[data-controls-dialog="${id}"]`);
 
+        // Loop through all buttons that open modal and attach event listener
         openButtons.forEach(button => button.addEventListener('click', openDialog));
     }
 
