@@ -138,6 +138,9 @@ const VUIDialog = ({
         // Add class to make dialog visible. Needs to occur before focus.
         dialog.classList.add(activeClass);
 
+        // Prevent page scroll
+        DOM.page.classList.add(DEFAULT_CLASSNAMES.isNoScroll);
+
         // Set focus to first element, fallback to Dialog.
         if (state.focusableElements.length) {
             state.focusableElements[0].focus();
@@ -193,6 +196,9 @@ const VUIDialog = ({
         if (DOM.backdrop) {
             DOM.page.removeChild(DOM.backdrop);
         }
+
+        // Allow page scroll
+        DOM.page.classList.remove(DEFAULT_CLASSNAMES.isNoScroll);
 
         // Reset state and return focus to button that opened the dialog
         state.currentOpenButton.focus();
