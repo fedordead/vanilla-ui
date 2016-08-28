@@ -210,13 +210,8 @@ const VUIDialog = ({
      * @param {Event} e
      */
     function handleKeyPress(e) {
-<<<<<<< Updated upstream
         if (e.keyCode === keyCodes.ESCAPE && !isModal && !isAlert) {
-            hideDialog(state.currentDialog);
-=======
-        if (e.keyCode === KEYCODES.escape && !isModal && !isAlert) {
             closeDialog(state.currentDialog);
->>>>>>> Stashed changes
         }
 
         if (e.keyCode === keyCodes.TAB && !isModal) {
