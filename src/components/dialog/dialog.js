@@ -1,4 +1,4 @@
-import {keyCodes, defaultClassNames, NATIVELY_FOCUSABLE_ELEMENTS} from '../../constants';
+import {KEYCODES, DEFAULT_CLASSNAMES, NATIVELY_FOCUSABLE_ELEMENTS} from '../../constants';
 
 import createEl from '../../utils/createEl';
 import defer from '../../utils/defer';
@@ -19,8 +19,8 @@ const VUIDialog = ({
         closeBtn = '.js-dialog-btn-close',
         isModal = false,
         isAlert = false,
-        readyClass = defaultClassNames.IS_READY,
-        activeClass = defaultClassNames.IS_ACTIVE,
+        readyClass = DEFAULT_CLASSNAMES.isReady,
+        activeClass = DEFAULT_CLASSNAMES.isActive,
         showBackdrop = true
     } = {}) => {
 
@@ -73,7 +73,7 @@ const VUIDialog = ({
      */
     function createBackdrop() {
         // Create the backdrop
-        DOM.backdrop = createEl({className: defaultClassNames.BACKDROP});
+        DOM.backdrop = createEl({className: DEFAULT_CLASSNAMES.backdrop});
     }
 
 
@@ -225,11 +225,11 @@ const VUIDialog = ({
      * @param {Event} e
      */
     function handleKeyPress(e) {
-        if (e.keyCode === keyCodes.ESCAPE && !isModal && !isAlert) {
+        if (e.keyCode === KEYCODES.escape && !isModal && !isAlert) {
             hideDialog(state.currentDialog);
         }
 
-        if (e.keyCode === keyCodes.TAB && !isModal) {
+        if (e.keyCode === KEYCODES.tab && !isModal) {
             trapFocus(e, state.focusableElements);
         }
     }
