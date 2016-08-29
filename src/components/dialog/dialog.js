@@ -62,7 +62,7 @@ const VUIDialog = ({
      */
     function handleBackdropClick(e) {
         if (e.target === DOM.backdrop) {
-            hideDialog(state.currentDialog);
+            closeDialog(state.currentDialog);
         }
     }
 
@@ -78,19 +78,6 @@ const VUIDialog = ({
 
 
     /**
-     * @function addDialogA11y
-     * @desc Applies relevant roles and attributes to the dialog
-     * @param {node} dialog
-     */
-    function addDialogA11y(dialog) {
-        const role = isAlert ? 'alertdialog' : 'dialog';
-
-        dialog.setAttribute('aria-hidden', 'true');
-        dialog.setAttribute('role', role);
-    }
-
-
-    /**
      * @function bindOpenEvents
      * @desc Finds all open buttons and attaches click event listener
      * @param {node} dialog
@@ -99,51 +86,35 @@ const VUIDialog = ({
         const id = dialog.getAttribute('id');
 
         // Grab all buttons which open this instance of the dialog
-        const openButtons = qa(`${openBtn}[data-controls-modal="${id}"]`);
+        const openButtons = qa(`${openBtn}[data-controls-dialog="${id}"]`);
 
+        // Loop through all buttons that open modal and attach event listener
         openButtons.forEach(button => button.addEventListener('click', openDialog));
     }
 
 
     /**
      * @function openDialog
-     * @desc Sets up dialog and state ready to be shown.  Is triggered by user clicking on open button
+     * @desc Sets up dialog and state ready to be shown. Is triggered by user clicking on open
+     * button. Also sets up focusable elements, close and key events and displays dialog
      * @param {Event} e
      */
     function openDialog(e) {
         // Get trigger button so focus can be returned to it later
         const button = e.target;
-        // Get dialog that should be opened
-        const dialog = document.getElementById(button.getAttribute('data-controls-modal'));
 
-        //  Update State
+        // Get dialog that should be opened
+        const dialog = document.getElementById(button.getAttribute('data-controls-dialog'));
+
+        // Update State
         state.currentOpenButton = button;
         state.currentDialog = dialog;
 
-        showDialog(dialog);
-    }
-
-
-    /**
-     * @function showDialog
-     * @desc Sets up focusable elements, close and key events and displays dialog
-     */
-    function showDialog(dialog) {
-        //  Focus the dialog and remove aria attributes
+        // Focus the dialog and remove aria attributes
         dialog.setAttribute('tabindex', 1);
         dialog.setAttribute('aria-hidden', false);
 
-        //  Grabs elements that are focusable inside this dialog instance.
-        state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
-
-        //  Set focus to first element, fallback to Dialog.
-        if (state.focusableElements.length) {
-            state.focusableElements[0].focus();
-        } else {
-            dialog.focus();
-        }
-
-        //  Bind events
+        // Bind events
         defer(bindKeyCodeEvents);
         defer(bindCloseEvents);
         if (!isModal && DOM.backdrop) {
@@ -155,17 +126,26 @@ const VUIDialog = ({
             DOM.page.appendChild(DOM.backdrop);
         }
 
-        //  Add class to make dialog visible
+        // Grabs elements that are focusable inside this dialog instance.
+        state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
+
+        // Add class to make dialog visible. Needs to occur before focus.
         dialog.classList.add(activeClass);
+
+        // Set focus to first element, fallback to Dialog.
+        if (state.focusableElements.length) {
+            state.focusableElements[0].focus();
+        } else {
+            dialog.focus();
+        }
     }
 
 
     /**
      * @function bindCloseEvents
      * @desc Finds all close buttons and attaches click event listener
-     * @param {node} dialog
      */
-    function bindCloseEvents(dialog = state.currentDialog) {
+    function bindCloseEvents() {
         // Grab all buttons which open this instance of the dialog
         const closeButtons = qa(closeBtn);
 
@@ -175,21 +155,14 @@ const VUIDialog = ({
 
     /**
      * @function closeDialog
-     * @desc Bridging function that sets up dialog ready to be hidden
+     * @desc Triggered by user interacting with a close button or in some cases clicking backdrop.
+     * Adds aria attributes and hides dialog, removing backdrop if needed
      */
     function closeDialog() {
-        hideDialog(state.currentDialog);
-    }
 
+        const dialog = state.currentDialog;
 
-    /**
-     * @function hideDialog
-     * @desc adds aria attributes and hides dialog, removing backdrop if needed
-     * @param {node} dialog
-     */
-    function hideDialog(dialog) {
-
-        //  Hide dialog for screenreaders and make untabbable
+        // Hide dialog for screenreaders and make untabbable
         dialog.setAttribute('aria-hidden', true);
         dialog.removeAttribute('tabindex');
 
@@ -199,7 +172,7 @@ const VUIDialog = ({
             unbindBackdropEvents();
         }
 
-        //  Remove active state hook class
+        // Remove active state hook class
         dialog.classList.remove(activeClass);
 
         // Remove backdrop if needed
@@ -239,7 +212,7 @@ const VUIDialog = ({
      */
     function handleKeyPress(e) {
         if (e.keyCode === keyCodes.ESCAPE && !isModal && !isAlert) {
-            hideDialog(state.currentDialog);
+            closeDialog(state.currentDialog);
         }
 
         if (e.keyCode === keyCodes.TAB && !isModal) {
@@ -267,13 +240,16 @@ const VUIDialog = ({
         }
 
         DOM.dialogs.forEach(dialog => {
-            // Add accessibility to dialog
-            addDialogA11y(dialog);
+
+            // Add aria roles and attributes
+            const role = isAlert ? 'alertdialog' : 'dialog';
+
+            dialog.setAttribute('aria-hidden', 'true');
+            dialog.setAttribute('role', role);
 
             // Set up event listeners for opening dialog
             bindOpenEvents(dialog);
 
-            // Set ready class
             dialog.classList.add(readyClass);
         });
     }
