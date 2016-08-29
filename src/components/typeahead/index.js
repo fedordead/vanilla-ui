@@ -1,3 +1,3 @@
-import typeahead from './typeahead';
+import VUITypeahead from './typeahead';
 
-export default typeahead;
+export default VUITypeahead;

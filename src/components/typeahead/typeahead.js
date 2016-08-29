@@ -1,34 +1,34 @@
 import {keyCodes, defaultClassNames} from '../../constants';
 
 import createEl from '../../utils/createEl';
-// import defer from '../../utils/defer';
 import qa from '../../utils/qa';
 import nodeMap from '../../utils/nodeMap';
 import isAlphaNumeric from '../../utils/isAlphaNumeric';
 
 
 /**
- * @function UITypeahead
+ * @function VUITypeahead
  * @version 0.0.2
- * @desc Main UITypeahead function. Creates instances of the typeahead based on
+ * @desc Main VUITypeahead function. Creates instances of the typeahead based on
  * parameters passed in.
  * @param {object} settings
  */
-const UITypeahead = ({
+const VUITypeahead = ({
         typeahead = '.js-typeahead',
         toggleBtn = '.js-typeahead-btn',
         readyClass = defaultClassNames.IS_READY,
         activeClass = defaultClassNames.IS_ACTIVE,
         noMatchesText = 'No Matches',
-        noMatchesClass = 'no-matches'
+        noMatchesClass = 'no-matches',
+        maxResults = 2
     } = {}) => {
 
-    // Stores all the dom nodes for the module
+    // Stores all the constant dom nodes for the component regardless of instance.
     let DOM = {
         typeaheads: qa(typeahead)
     };
 
-    // Keeps track of current state
+    // Keeps track of current instance of typeahead.
     let state = {
         currentInput: null,
         currentDropdown: null,
@@ -49,9 +49,11 @@ const UITypeahead = ({
 
         const alphaNumeric = isAlphaNumeric(e.keyCode);
 
+        // Typeahead dropdown closed
         if (!state.isDropdownOpen) {
-            if (e.keyCode === keyCodes.UP_ARROW ||
-                e.keyCode === keyCodes.DOWN_ARROW ||
+
+            // Down arrow or typing a letter should open dropdown.
+            if (e.keyCode === keyCodes.DOWN_ARROW ||
                 alphaNumeric) {
                 showTypeahead(state.currentDropdown);
             }
@@ -60,11 +62,11 @@ const UITypeahead = ({
                 updateOptions(e.target.value + e.key);
             }
 
-        // Dropdown already open:
+        // Typeahead dropdown already open:
         } else {
 
             if (e.keyCode === keyCodes.ESCAPE ||
-                e.keyCode === keyCodes.BACKSPACE && e.target.value.length === 1) {
+               (e.keyCode === keyCodes.BACKSPACE && e.target.value.length === 1)) {
                 closeDropdown();
             } else if (
                 e.keyCode === keyCodes.UP_ARROW ||
@@ -83,6 +85,12 @@ const UITypeahead = ({
     }
 
 
+    /**
+     * @function traverseList
+     * @desc Moves up and down through a list of nodes, wrapping around at the first and last
+     * element.
+     * @param {Event} e
+     */
     function traverseList(e) {
 
         if (state.currentHighlighted) {
@@ -117,17 +125,22 @@ const UITypeahead = ({
         newSelected.classList.add(defaultClassNames.IS_SELECTED);
         state.currentHighlighted = newSelected;
 
-        // display selected value in text field
+        // Display selected value in text field.
         state.currentInput.value = state.currentHighlighted.innerText;
     };
 
 
+    /**
+     * @function updateOptions
+     * @desc Filters list of options according to user input.
+     * @param {string} inputValue - current value in text field
+     */
     function updateOptions(inputValue) {
 
-        // create subset of options based on word typed
+        // Create subset of options based on word typed.
         state.subSetOptions = state.fullOptions.filter(val => val.innerText.toLowerCase().includes(inputValue));
 
-        // Fall back for no matches
+        // Fall back for no matches.
         if (!state.subSetOptions.length) {
             state.subSetOptions = [
                 createEl(createDropdownItem({
@@ -137,28 +150,29 @@ const UITypeahead = ({
             ];
         }
 
-        // create new dropdown element with same props
+        // Create new dropdown element with same props.
         const dropDown = createEl(generateDropdown());
 
         dropDown.classList.add(defaultClassNames.IS_ACTIVE);
-        // add new subset to the new dropdown
 
+        // Add new subset to the new dropdown.
         state.subSetOptions.forEach(option => dropDown.appendChild(option));
 
-        // Switch out old dropdown list with updated nodeList
+        // Switch out old dropdown list with updated nodeList.
         state.currentDropdown.parentNode.replaceChild(
             dropDown,
             state.currentDropdown
         );
 
-        // Update State
+        // Update State.
         state.currentDropdown = dropDown;
     }
 
+
     /**
      * @function setCurrentTypeahead
-     * @desc sets up typeahead and state ready to be shown
-     * @param {node} typeahead
+     * @desc Sets up typeahead and state ready to be shown
+     * @param {Event} e
      */
     function setCurrentTypeahead(e) {
 
@@ -180,18 +194,25 @@ const UITypeahead = ({
         // Return alphabetical array of options
         state.fullOptions = [].slice.call(dropdown.children).sort((obj1, obj2) => obj1.innerText > obj2.innerText);
 
-        state.subSetOptions = setSubSetOptions(state.fullOptions);
+        state.subSetOptions = setSubSetOptions(state.fullOptions, maxResults);
     }
 
-    const MAX_RESULTS = 2;
 
-    function setSubSetOptions(fullOptions) {
-        return [].slice.call(fullOptions, MAX_RESULTS);
+    /**
+     * @function setSubSetOptions
+     * @desc Limit results to max.
+     * @param {array} fullOptions - all results for search criteria
+     * @param {number} max - max number of options shown in typeahead
+     */
+    function setSubSetOptions(fullOptions, max) {
+        return [].slice.call(fullOptions, max);
     }
+
 
     /**
      * @function showTypeahead
-     * @desc Sets up focusable elements, close and key events and displays modal
+     * @desc Displays the dropdown for the Typeahead
+     * @param {node} dropdown - the dropdown part of the current Typehead instance
      */
     function showTypeahead(dropdown) {
         //  Remove aria attributes update State
@@ -213,6 +234,7 @@ const UITypeahead = ({
      * @param {string} params.name
      * @param {string} params.id
      * @param {string} params.text
+     * @param {string} params.className
      */
     const createDropdownItem = ({value, name = 'typer', id, text, className}) => {
 
@@ -228,6 +250,11 @@ const UITypeahead = ({
     };
 
 
+    /**
+     * @function generateDropdown
+     * @desc Creates the markup for the dropdown with it's options.
+     * @param {array} options - array of objects to populate the dropdown.
+     */
     function generateDropdown(options) {
 
         return {
@@ -241,11 +268,22 @@ const UITypeahead = ({
         };
     }
 
-    function removeTypeahead(e) {
 
+    /**
+     * @function removeTypeahead
+     * @desc Hides the Typeahead
+     * @param {Event} e - clicked item in the dropdown.
+     */
+    function removeTypeahead(e) {
         console.dir(e.target);
     }
 
+
+    /**
+     * @function typeaheadButtonClick
+     * @desc Toggle button that opens and closes the dropdown
+     * @param {Event} e - clicked button.
+     */
     function typeaheadButtonClick(e) {
         if (!state.currentDropdown) {
             setCurrentTypeahead(e.target.previousSibling);
@@ -259,12 +297,17 @@ const UITypeahead = ({
 
         //return focus to input
         state.currentInput.focus();
-
     };
+
 
     /**
      * @function createTypeaheadElement
      * @desc Creates the core typeahead UI
+     * @param {object} params
+     * @param {string} params.id
+     * @param {string} params.text
+     * @param {string} params.name
+     * @param {object} params.options
      */
     function createTypeaheadElement({id, text, name, options}) {
 
@@ -323,6 +366,7 @@ const UITypeahead = ({
         });
     }
 
+
     /**
      * @function extractSelect
      * @desc Grabs details from the select and label in the dom
@@ -344,15 +388,31 @@ const UITypeahead = ({
     }
 
 
+    /**
+     * @function handleClick
+     * @desc Handles the option clicked on in the dropdown
+     * @param {Event} e - clicked option.
+     */
     function handleClick(e) {
         setValue(e.target);
         closeDropdown();
     }
 
-    function handleEnter(e) {
+
+    /**
+     * @function handleEnter
+     * @desc event handler for when enter key pressed
+     */
+    function handleEnter() {
         setValue(state.currentHighlighted);
     }
 
+
+    /**
+     * @function setValue
+     * @desc sets the value of the text input part of the Typeahead.
+     * @param {node} option - selected option.
+     */
     function setValue(option) {
         state.currentInput.value = option.innerText;
         // state.currentHiddenInput.value = option.dataset.value;
@@ -389,6 +449,7 @@ const UITypeahead = ({
         dropdown.addEventListener('click', handleClick);
     }
 
+
     /**
      * @function init
      * @desc Initialises the Typeahead
@@ -416,9 +477,9 @@ const UITypeahead = ({
         });
     }
 
-    // Initialise UITypeahead module
+    // Initialise VUITypeahead component
     init();
 };
 
 
-export default UITypeahead;
+export default VUITypeahead;
