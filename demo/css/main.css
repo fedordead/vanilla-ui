@@ -35,6 +35,6 @@ body {
     display: block !important;
 }
 
-.is-no-scroll {
+html.has-no-vertical-scroll {
   overflow-y: hidden !important;
 }

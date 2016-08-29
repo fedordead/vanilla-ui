@@ -123,7 +123,7 @@ const VUIDialog = ({
 
         // Add backdrop if needed
         if (DOM.backdrop) {
-            DOM.page.appendChild(DOM.backdrop);
+            DOM.body.appendChild(DOM.backdrop);
         }
 
         // Grabs elements that are focusable inside this dialog instance.
@@ -132,8 +132,8 @@ const VUIDialog = ({
         // Add class to make dialog visible. Needs to occur before focus.
         dialog.classList.add(activeClass);
 
-        // Prevent page scroll
-        DOM.page.classList.add(DEFAULT_CLASSNAMES.isNoScroll);
+        // Remove vertical viewport scroll
+        DOM.root.classList.add(DEFAULT_CLASSNAMES.hasNoVerticalScroll);
 
         // Set focus to first element, fallback to Dialog.
         if (state.focusableElements.length) {
@@ -163,8 +163,6 @@ const VUIDialog = ({
      * Adds aria attributes and hides dialog, removing backdrop if needed
      */
     function closeDialog() {
-        hideDialog(state.currentDialog);
-    }
 
         const dialog = state.currentDialog;
 
@@ -183,11 +181,11 @@ const VUIDialog = ({
 
         // Remove backdrop if needed
         if (DOM.backdrop) {
-            DOM.page.removeChild(DOM.backdrop);
+            DOM.body.removeChild(DOM.backdrop);
         }
 
-        // Allow page scroll
-        DOM.page.classList.remove(DEFAULT_CLASSNAMES.isNoScroll);
+        // Allow vertical viewport scroll
+        DOM.root.classList.remove(DEFAULT_CLASSNAMES.hasNoVerticalScroll);
 
         // Reset state and return focus to button that opened the dialog
         state.currentOpenButton.focus();
@@ -241,8 +239,9 @@ const VUIDialog = ({
             return false;
         }
 
-        // Add body element to the DOM object
-        DOM.page = qa('body')[0];
+        // Add body and html element to the DOM object
+        DOM.root = qa('html')[0];
+        DOM.body = qa('body')[0];
 
         if (showBackdrop) {
             createBackdrop();

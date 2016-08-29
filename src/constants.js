@@ -16,7 +16,7 @@ export const DEFAULT_CLASSNAMES = {
     isActive: 'is-active',
     isHidden: 'is-hidden',
     isReady: 'is-ready',
-    isNoScroll: 'is-no-scroll',
+    hasNoVerticalScroll: 'has-no-vertical-scroll',
     noBackdrop: 'no-backdrop',
     backdrop: 'dialog-backdrop'
 };
