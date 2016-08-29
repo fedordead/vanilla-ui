@@ -62,7 +62,7 @@ const VUIDialog = ({
      */
     function handleBackdropClick(e) {
         if (e.target === DOM.backdrop) {
-            hideDialog(state.currentDialog);
+            closeDialog(state.currentDialog);
         }
     }
 
@@ -88,18 +88,21 @@ const VUIDialog = ({
         // Grab all buttons which open this instance of the dialog
         const openButtons = qa(`${openBtn}[data-controls-dialog="${id}"]`);
 
+        // Loop through all buttons that open modal and attach event listener
         openButtons.forEach(button => button.addEventListener('click', openDialog));
     }
 
 
     /**
      * @function openDialog
-     * @desc Sets up dialog and state ready to be shown.  Is triggered by user clicking on open button
+     * @desc Sets up dialog and state ready to be shown. Is triggered by user clicking on open
+     * button. Also sets up focusable elements, close and key events and displays dialog
      * @param {Event} e
      */
     function openDialog(e) {
         // Get trigger button so focus can be returned to it later
         const button = e.target;
+
         // Get dialog that should be opened
         const dialog = document.getElementById(button.getAttribute('data-controls-dialog'));
 
@@ -107,15 +110,6 @@ const VUIDialog = ({
         state.currentOpenButton = button;
         state.currentDialog = dialog;
 
-        showDialog(dialog);
-    }
-
-
-    /**
-     * @function showDialog
-     * @desc Sets up focusable elements, close and key events and displays dialog
-     */
-    function showDialog(dialog) {
         // Focus the dialog and remove aria attributes
         dialog.setAttribute('tabindex', 1);
         dialog.setAttribute('aria-hidden', false);
@@ -150,9 +144,8 @@ const VUIDialog = ({
     /**
      * @function bindCloseEvents
      * @desc Finds all close buttons and attaches click event listener
-     * @param {node} dialog
      */
-    function bindCloseEvents(dialog = state.currentDialog) {
+    function bindCloseEvents() {
         // Grab all buttons which open this instance of the dialog
         const closeButtons = qa(closeBtn);
 
@@ -162,19 +155,12 @@ const VUIDialog = ({
 
     /**
      * @function closeDialog
-     * @desc Bridging function that sets up dialog ready to be hidden
+     * @desc Triggered by user interacting with a close button or in some cases clicking backdrop.
+     * Adds aria attributes and hides dialog, removing backdrop if needed
      */
     function closeDialog() {
-        hideDialog(state.currentDialog);
-    }
 
-
-    /**
-     * @function hideDialog
-     * @desc adds aria attributes and hides dialog, removing backdrop if needed
-     * @param {node} dialog
-     */
-    function hideDialog(dialog) {
+        const dialog = state.currentDialog;
 
         // Hide dialog for screenreaders and make untabbable
         dialog.setAttribute('aria-hidden', true);
@@ -226,7 +212,7 @@ const VUIDialog = ({
      */
     function handleKeyPress(e) {
         if (e.keyCode === keyCodes.ESCAPE && !isModal && !isAlert) {
-            hideDialog(state.currentDialog);
+            closeDialog(state.currentDialog);
         }
 
         if (e.keyCode === keyCodes.TAB && !isModal) {
