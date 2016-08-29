@@ -1,9 +1,10 @@
 import {keyCodes, defaultClassNames} from '../../constants';
 
 import createEl from '../../utils/createEl';
-import qa from '../../utils/qa';
-import nodeMap from '../../utils/nodeMap';
 import isAlphaNumeric from '../../utils/isAlphaNumeric';
+import nodeMap from '../../utils/nodeMap';
+import qa from '../../utils/qa';
+import traverseList from '../../utils/traverseList';
 
 
 /**
@@ -74,8 +75,17 @@ const VUITypeahead = ({
                 (e.keyCode === keyCodes.UP_ARROW && e.altKey) ||
                 (e.keyCode === keyCodes.DOWN_ARROW && e.altKey)
                 ) {
+
                 // Move up and down list
-                traverseList(e);
+                const highlightedOption = traverseList(e.keyCode,
+                                                       state.currentDropdown.children,
+                                                       state.currentHighlighted);
+
+                // Update state
+                state.currentInput.value = highlightedOption.innerText;
+                state.currentHighlighted = highlightedOption;
+
+
             } else if (e.keyCode === keyCodes.ENTER) {
                 handleEnter(e);
             } else if (alphaNumeric) {
@@ -83,51 +93,6 @@ const VUITypeahead = ({
             }
         }
     }
-
-
-    /**
-     * @function traverseList
-     * @desc Moves up and down through a list of nodes, wrapping around at the first and last
-     * element.
-     * @param {Event} e
-     */
-    function traverseList(e) {
-
-        if (state.currentHighlighted) {
-            state.currentHighlighted.classList.remove(defaultClassNames.IS_SELECTED);
-        }
-
-        let newSelected;
-
-        const children = state.currentDropdown.children;
-
-        // If up key and first or no element selected, select last element
-        if (e.keyCode === keyCodes.UP_ARROW &&
-           (!state.currentHighlighted || !state.currentHighlighted.previousSibling)) {
-
-            newSelected = children[children.length - 1];
-
-        // If down key and last or no element selected, select first element
-        } else if (e.keyCode === keyCodes.DOWN_ARROW &&
-                  (!state.currentHighlighted || !state.currentHighlighted.nextSibling)) {
-
-            newSelected = children[0];
-
-        // If up key select sibling prev
-        } else if (e.keyCode === keyCodes.UP_ARROW) {
-            newSelected = state.currentHighlighted.previousSibling;
-
-        // Fall back to Down key, selects item below
-        } else {
-            newSelected = state.currentHighlighted.nextSibling;
-        }
-
-        newSelected.classList.add(defaultClassNames.IS_SELECTED);
-        state.currentHighlighted = newSelected;
-
-        // Display selected value in text field.
-        state.currentInput.value = state.currentHighlighted.innerText;
-    };
 
 
     /**
