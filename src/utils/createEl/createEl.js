@@ -44,9 +44,9 @@ const createEl = ({
             if (key.substring(0, 2) === 'on') {
                 el.addEventListener(key.substring(2).toLowerCase(), attributes[key]);
             } else {
-            el.setAttribute(key, attributes[key]);
+                el.setAttribute(key, attributes[key]);
+            }
         }
-    }
     }
 
     // Create new element for each child and append
