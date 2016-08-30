@@ -38,6 +38,16 @@ const VUIDialog = ({
 
 
     /**
+     * @function setState
+     * @desc Updates state for component
+     * @param {object} updates Changes in state to be assigned.
+     */
+    function setState(updates) {
+        state = Object.assign(state, updates);
+    }
+
+
+    /**
      * @function bindBackdropEvents
      * @desc Adds event listener for clicking on backdrop
      */
@@ -72,7 +82,6 @@ const VUIDialog = ({
      * @desc Creates the dialog backdrop
      */
     function createBackdrop() {
-        // Create the backdrop
         DOM.backdrop = createEl({className: DEFAULT_CLASSNAMES.backdrop});
     }
 
@@ -107,8 +116,10 @@ const VUIDialog = ({
         const dialog = document.getElementById(button.getAttribute('data-controls-dialog'));
 
         // Update State
-        state.currentOpenButton = button;
-        state.currentDialog = dialog;
+        setState({
+            currentOpenButton: button,
+            currentDialog: dialog;
+        });
 
         // Focus the dialog and remove aria attributes
         dialog.setAttribute('tabindex', 1);
@@ -127,7 +138,9 @@ const VUIDialog = ({
         }
 
         // Grabs elements that are focusable inside this dialog instance.
-        state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
+        setState({
+            focusableElements: qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog)
+        });
 
         // Add class to make dialog visible. Needs to occur before focus.
         dialog.classList.add(activeClass);
@@ -187,10 +200,14 @@ const VUIDialog = ({
         // Allow vertical viewport scroll
         DOM.root.classList.remove(DEFAULT_CLASSNAMES.hasNoVerticalScroll);
 
-        // Reset state and return focus to button that opened the dialog
+        // Return focus to button that opened the dialog
         state.currentOpenButton.focus();
-        state.currentOpenButton = null;
-        state.currentDialog = null;
+
+        // Reset State
+        setState({
+            currentOpenButton: null,
+            currentDialog: null
+        });
     }
 
 
