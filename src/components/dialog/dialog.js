@@ -1,4 +1,4 @@
-import {keyCodes, defaultClassNames, NATIVELY_FOCUSABLE_ELEMENTS} from '../../constants';
+import {KEYCODES, DEFAULT_CLASSNAMES, NATIVELY_FOCUSABLE_ELEMENTS} from '../../constants';
 
 import createEl from '../../utils/createEl';
 import defer from '../../utils/defer';
@@ -19,8 +19,8 @@ const VUIDialog = ({
         closeBtn = '.js-dialog-btn-close',
         isModal = false,
         isAlert = false,
-        readyClass = defaultClassNames.IS_READY,
-        activeClass = defaultClassNames.IS_ACTIVE,
+        readyClass = DEFAULT_CLASSNAMES.isReady,
+        activeClass = DEFAULT_CLASSNAMES.isActive,
         showBackdrop = true
     } = {}) => {
 
@@ -73,7 +73,7 @@ const VUIDialog = ({
      */
     function createBackdrop() {
         // Create the backdrop
-        DOM.backdrop = createEl({className: defaultClassNames.BACKDROP});
+        DOM.backdrop = createEl({className: DEFAULT_CLASSNAMES.backdrop});
     }
 
 
@@ -123,7 +123,7 @@ const VUIDialog = ({
 
         // Add backdrop if needed
         if (DOM.backdrop) {
-            DOM.page.appendChild(DOM.backdrop);
+            DOM.body.appendChild(DOM.backdrop);
         }
 
         // Grabs elements that are focusable inside this dialog instance.
@@ -131,6 +131,9 @@ const VUIDialog = ({
 
         // Add class to make dialog visible. Needs to occur before focus.
         dialog.classList.add(activeClass);
+
+        // Remove vertical viewport scroll
+        DOM.root.classList.add(DEFAULT_CLASSNAMES.hasNoVerticalScroll);
 
         // Set focus to first element, fallback to Dialog.
         if (state.focusableElements.length) {
@@ -144,8 +147,9 @@ const VUIDialog = ({
     /**
      * @function bindCloseEvents
      * @desc Finds all close buttons and attaches click event listener
+     * @param {node} dialog
      */
-    function bindCloseEvents() {
+    function bindCloseEvents(dialog = state.currentDialog) {
         // Grab all buttons which open this instance of the dialog
         const closeButtons = qa(closeBtn);
 
@@ -177,8 +181,11 @@ const VUIDialog = ({
 
         // Remove backdrop if needed
         if (DOM.backdrop) {
-            DOM.page.removeChild(DOM.backdrop);
+            DOM.body.removeChild(DOM.backdrop);
         }
+
+        // Allow vertical viewport scroll
+        DOM.root.classList.remove(DEFAULT_CLASSNAMES.hasNoVerticalScroll);
 
         // Reset state and return focus to button that opened the dialog
         state.currentOpenButton.focus();
@@ -211,11 +218,11 @@ const VUIDialog = ({
      * @param {Event} e
      */
     function handleKeyPress(e) {
-        if (e.keyCode === keyCodes.ESCAPE && !isModal && !isAlert) {
+        if (e.keyCode === KEYCODES.escape && !isModal && !isAlert) {
             closeDialog(state.currentDialog);
         }
 
-        if (e.keyCode === keyCodes.TAB && !isModal) {
+        if (e.keyCode === KEYCODES.tab && !isModal) {
             trapFocus(e, state.focusableElements);
         }
     }
@@ -232,8 +239,9 @@ const VUIDialog = ({
             return false;
         }
 
-        // Add body element to the DOM object
-        DOM.page = qa('body')[0];
+        // Add body and html element to the DOM object
+        DOM.root = qa('html')[0];
+        DOM.body = qa('body')[0];
 
         if (showBackdrop) {
             createBackdrop();

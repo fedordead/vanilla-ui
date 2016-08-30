@@ -34,3 +34,7 @@ body {
 .dialog.is-active {
     display: block !important;
 }
+
+html.has-no-vertical-scroll {
+  overflow-y: hidden !important;
+}

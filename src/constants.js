@@ -1,23 +1,24 @@
 // Keyboard keycodes
-export const keyCodes = {
-    TAB: 9,
-    ENTER: 13,
-    ESCAPE: 27,
-    SPACE: 32,
-    LEFT_ARROW: 37,
-    UP_ARROW: 38,
-    RIGHT_ARROW: 39,
-    DOWN_ARROW: 40
+export const KEYCODES = {
+    tab: 9,
+    enter: 13,
+    escape: 27,
+    space: 32,
+    leftArrow: 37,
+    upArrow: 38,
+    rightArrow: 39,
+    downArrow: 40
 };
 
 
 // Classnames likely to be shared across modules
-export const defaultClassNames = {
-    IS_ACTIVE: 'is-active',
-    IS_HIDDEN: 'is-hidden',
-    IS_READY: 'is-ready',
-    NO_BACKDROP: 'no-backdrop',
-    BACKDROP: 'dialog-backdrop'
+export const DEFAULT_CLASSNAMES = {
+    isActive: 'is-active',
+    isHidden: 'is-hidden',
+    isReady: 'is-ready',
+    hasNoVerticalScroll: 'has-no-vertical-scroll',
+    noBackdrop: 'no-backdrop',
+    backdrop: 'dialog-backdrop'
 };
 
 
