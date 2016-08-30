@@ -40,6 +40,10 @@ const VUITypeahead = ({
         subSetOptions: []
     };
 
+    function setState(updates) {
+        state = Object.assign(state, updates);
+    }
+
 
     /**
      * @function handleKeyPress
@@ -82,8 +86,10 @@ const VUITypeahead = ({
                                                        state.currentHighlighted);
 
                 // Update state
+                setState({
+                    currentHighlighted: highlightedOption;
+                });
                 state.currentInput.value = highlightedOption.innerText;
-                state.currentHighlighted = highlightedOption;
 
 
             } else if (e.keyCode === keyCodes.ENTER) {
@@ -103,16 +109,20 @@ const VUITypeahead = ({
     function updateOptions(inputValue) {
 
         // Create subset of options based on word typed.
-        state.subSetOptions = state.fullOptions.filter(val => val.innerText.toLowerCase().includes(inputValue));
+        setState({
+            subSetOptions: state.fullOptions.filter(val => val.innerText.toLowerCase().includes(inputValue));
+        });
 
         // Fall back for no matches.
         if (!state.subSetOptions.length) {
-            state.subSetOptions = [
+            setState({
+                subSetOptions: [
                 createEl(createDropdownItem({
                     text: noMatchesText,
                     className: noMatchesClass})
-                )
-            ];
+                    )
+                ];
+            });
         }
 
         // Create new dropdown element with same props.
@@ -182,7 +192,10 @@ const VUITypeahead = ({
     function showTypeahead(dropdown) {
         //  Remove aria attributes update State
         dropdown.setAttribute('aria-hidden', false);
-        state.isDropdownOpen = true;
+
+        setState({
+            isDropdownOpen: true
+        });
 
         bindClickEvents(dropdown);
 
