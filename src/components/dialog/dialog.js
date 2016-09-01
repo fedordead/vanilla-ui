@@ -58,8 +58,6 @@ const VUIDialog = ({
     }
 
 
-
-
     /**
      * @function bindBackdropEvents
      * @desc Adds event listener for clicking on backdrop
@@ -96,7 +94,7 @@ const VUIDialog = ({
      */
     function createBackdrop() {
         setDOM({
-            backdrop: createEl({className: DEFAULT_CLASSNAMES.backdrop});
+            backdrop: createEl({className: DEFAULT_CLASSNAMES.backdrop})
         });
     }
 
