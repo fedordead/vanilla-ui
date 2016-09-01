@@ -1,5 +1,7 @@
+// Constants
 import {KEYCODES, DEFAULT_CLASSNAMES, NATIVELY_FOCUSABLE_ELEMENTS} from '../../constants';
 
+// Utils
 import createEl from '../../utils/createEl';
 import defer from '../../utils/defer';
 import qa from '../../utils/qa';
@@ -46,6 +48,17 @@ const VUIDialog = ({
         state = Object.assign(state, updates);
     }
 
+    /**
+     * @function setDOM
+     * @desc Updates DOM
+     * @param {object} updates Changes in DOM to be assigned.
+     */
+    function setDOM(updates) {
+        DOM = Object.assign(state, updates);
+    }
+
+
+
 
     /**
      * @function bindBackdropEvents
@@ -82,7 +95,9 @@ const VUIDialog = ({
      * @desc Creates the dialog backdrop
      */
     function createBackdrop() {
-        DOM.backdrop = createEl({className: DEFAULT_CLASSNAMES.backdrop});
+        setDOM({
+            backdrop: createEl({className: DEFAULT_CLASSNAMES.backdrop});
+        });
     }
 
 
@@ -257,8 +272,10 @@ const VUIDialog = ({
         }
 
         // Add body and html element to the DOM object
-        DOM.root = qa('html')[0];
-        DOM.body = qa('body')[0];
+        setDOM({
+            root: qa('html')[0],
+            body: qa('body')[0]
+        });
 
         if (showBackdrop) {
             createBackdrop();
