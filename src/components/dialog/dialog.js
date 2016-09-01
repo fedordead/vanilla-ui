@@ -118,7 +118,7 @@ const VUIDialog = ({
         // Update State
         setState({
             currentOpenButton: button,
-            currentDialog: dialog;
+            currentDialog: dialog
         });
 
         // Focus the dialog and remove aria attributes
