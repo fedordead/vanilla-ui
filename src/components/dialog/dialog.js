@@ -21,7 +21,8 @@ const VUIDialog = ({
         isAlert = false,
         readyClass = DEFAULT_CLASSNAMES.isReady,
         activeClass = DEFAULT_CLASSNAMES.isActive,
-        showBackdrop = true
+        showBackdrop = true,
+        hasCloseBtn = false
     } = {}) => {
 
     // Stores all the constant dom nodes for the component regardless of instance.
@@ -113,6 +114,16 @@ const VUIDialog = ({
         // Focus the dialog and remove aria attributes
         dialog.setAttribute('tabindex', 1);
         dialog.setAttribute('aria-hidden', false);
+
+        // Alerts don't have close buttons
+        if (hasCloseBtn && !isAlert) {
+            const closeBtnEl = createEl({
+                element: 'button',
+                className: 'js-dialog-btn-close',
+                type: 'button'
+            })
+            dialog.appendChild(closeBtnEl);
+        }
 
         // Bind events
         defer(bindKeyCodeEvents);
