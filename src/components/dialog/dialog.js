@@ -91,10 +91,11 @@ const VUIDialog = ({
     /**
      * @function createBackdrop
      * @desc Creates the dialog backdrop
+     * @param {string} className the class to be assigned to the backdrop
      */
-    function createBackdrop() {
+    function createBackdrop(className = DEFAULT_CLASSNAMES.backdrop) {
         setDOM({
-            backdrop: createEl({className: DEFAULT_CLASSNAMES.backdrop})
+            backdrop: createEl({className})
         });
     }
 
@@ -261,25 +262,26 @@ const VUIDialog = ({
     /**
      * @function init
      * @desc Initialises the dialog
+     * @param {array} dialogs an array of DOM nodes
      */
-    function init() {
+    function init(dialogs, hasBackdrop) {
 
-        // Check if any dialogs exist, return if not
-        if (DOM.dialogs === undefined) {
+        // Check if any dialogs exist, don't initialise if not.
+        if (dialogs === undefined) {
             return false;
         }
 
-        // Add body and html element to the DOM object
+        // Add `<body>` and `<html>` elements to the DOM object
         setDOM({
             root: qa('html')[0],
             body: qa('body')[0]
         });
 
-        if (showBackdrop) {
+        if (hasBackdrop) {
             createBackdrop();
         }
 
-        DOM.dialogs.forEach(dialog => {
+        dialogs.forEach(dialog => {
 
             // Add aria roles and attributes
             const role = isAlert ? 'alertdialog' : 'dialog';
@@ -295,7 +297,7 @@ const VUIDialog = ({
     }
 
     // Initialise VUIDialog component
-    init();
+    init(DOM.dialogs, showBackdrop);
 };
 
 
