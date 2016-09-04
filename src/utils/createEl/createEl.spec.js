@@ -1,4 +1,5 @@
 import chai from 'chai';
+import spies from 'chai-spies';
 import jsdom from 'mocha-jsdom';
 import createEl from './createEl';
 
@@ -8,6 +9,7 @@ const expect = chai.expect;
 describe('createEl()', function () {
 
     jsdom()
+    chai.use(spies);
 
     it('should create a "div" when no params passed', () => {
         const div = createEl();
@@ -50,9 +52,11 @@ describe('createEl()', function () {
         expect(child.nodeName).eql('BUTTON')
     });
 
-    // it('should add an onclick event', () => {
-    //     const button = createEl({onClick: 'myFunc'});
-    //     expect(button.getEventListener('click')).eql('myFunc')
-    // });
+    it('should add an onclick event', () => {
+        const spy = chai.spy();
+        const button = createEl({onClick: spy});
+        button.click();
+        expect(spy).to.have.been.called();
+    });
 
 });
