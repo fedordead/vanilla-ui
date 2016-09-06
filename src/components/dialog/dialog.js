@@ -1,5 +1,7 @@
+// Constants
 import {KEYCODES, DEFAULT_CLASSNAMES, NATIVELY_FOCUSABLE_ELEMENTS} from '../../constants';
 
+// Utils
 import createEl from '../../utils/createEl';
 import defer from '../../utils/defer';
 import qa from '../../utils/qa';
@@ -38,6 +40,25 @@ const VUIDialog = ({
 
 
     /**
+     * @function setState
+     * @desc Updates state for component
+     * @param {object} updates Changes in state to be assigned.
+     */
+    function setState(updates) {
+        state = Object.assign(state, updates);
+    }
+
+    /**
+     * @function setDOM
+     * @desc Updates DOM
+     * @param {object} updates Changes in DOM to be assigned.
+     */
+    function setDOM(updates) {
+        DOM = Object.assign(state, updates);
+    }
+
+
+    /**
      * @function bindBackdropEvents
      * @desc Adds event listener for clicking on backdrop
      */
@@ -70,10 +91,12 @@ const VUIDialog = ({
     /**
      * @function createBackdrop
      * @desc Creates the dialog backdrop
+     * @param {string} className the class to be assigned to the backdrop
      */
-    function createBackdrop() {
-        // Create the backdrop
-        DOM.backdrop = createEl({className: DEFAULT_CLASSNAMES.backdrop});
+    function createBackdrop(className = DEFAULT_CLASSNAMES.backdrop) {
+        setDOM({
+            backdrop: createEl({className})
+        });
     }
 
 
@@ -107,8 +130,10 @@ const VUIDialog = ({
         const dialog = document.getElementById(button.getAttribute('data-controls-dialog'));
 
         // Update State
-        state.currentOpenButton = button;
-        state.currentDialog = dialog;
+        setState({
+            currentOpenButton: button,
+            currentDialog: dialog
+        });
 
         // Focus the dialog and remove aria attributes
         dialog.setAttribute('tabindex', 1);
@@ -127,7 +152,9 @@ const VUIDialog = ({
         }
 
         // Grabs elements that are focusable inside this dialog instance.
-        state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
+        setState({
+            focusableElements: qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog)
+        });
 
         // Add class to make dialog visible. Needs to occur before focus.
         dialog.classList.add(activeClass);
@@ -187,10 +214,14 @@ const VUIDialog = ({
         // Allow vertical viewport scroll
         DOM.root.classList.remove(DEFAULT_CLASSNAMES.hasNoVerticalScroll);
 
-        // Reset state and return focus to button that opened the dialog
+        // Return focus to button that opened the dialog
         state.currentOpenButton.focus();
-        state.currentOpenButton = null;
-        state.currentDialog = null;
+
+        // Reset State
+        setState({
+            currentOpenButton: null,
+            currentDialog: null
+        });
     }
 
 
@@ -231,23 +262,26 @@ const VUIDialog = ({
     /**
      * @function init
      * @desc Initialises the dialog
+     * @param {array} dialogs an array of DOM nodes
      */
-    function init() {
+    function init(dialogs, hasBackdrop) {
 
-        // Check if any dialogs exist, return if not
-        if (DOM.dialogs === undefined) {
+        // Check if any dialogs exist, don't initialise if not.
+        if (dialogs === undefined) {
             return false;
         }
 
-        // Add body and html element to the DOM object
-        DOM.root = qa('html')[0];
-        DOM.body = qa('body')[0];
+        // Add `<body>` and `<html>` elements to the DOM object
+        setDOM({
+            root: qa('html')[0],
+            body: qa('body')[0]
+        });
 
-        if (showBackdrop) {
+        if (hasBackdrop) {
             createBackdrop();
         }
 
-        DOM.dialogs.forEach(dialog => {
+        dialogs.forEach(dialog => {
 
             // Add aria roles and attributes
             const role = isAlert ? 'alertdialog' : 'dialog';
@@ -263,7 +297,7 @@ const VUIDialog = ({
     }
 
     // Initialise VUIDialog component
-    init();
+    init(DOM.dialogs, showBackdrop);
 };
 
 
