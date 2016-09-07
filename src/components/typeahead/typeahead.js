@@ -1,7 +1,7 @@
-import {keyCodes, defaultClassNames} from '../../constants';
+import {KEYCODES, DEFAULT_CLASSNAMES} from '../../constants';
 
 import createEl from '../../utils/createEl';
-import isAlphaNumeric from '../../utils/isAlphaNumeric';
+import keycodeIsAlphaNumeric from '../../utils/keycodeIsAlphaNumeric';
 import nodeMap from '../../utils/nodeMap';
 import qa from '../../utils/qa';
 import traverseList from '../../utils/traverseList';
@@ -17,8 +17,8 @@ import traverseList from '../../utils/traverseList';
 const VUITypeahead = ({
         typeahead = '.js-typeahead',
         toggleBtn = '.js-typeahead-btn',
-        readyClass = defaultClassNames.IS_READY,
-        activeClass = defaultClassNames.IS_ACTIVE,
+        readyClass = DEFAULT_CLASSNAMES.isReady,
+        activeClass = DEFAULT_CLASSNAMES.isActive,
         noMatchesText = 'No Matches',
         noMatchesClass = 'no-matches',
         maxResults = 2
@@ -52,13 +52,13 @@ const VUITypeahead = ({
      */
     function handleKeyPress(e) {
 
-        const alphaNumeric = isAlphaNumeric(e.keyCode);
+        const alphaNumeric = keycodeIsAlphaNumeric(e.keyCode);
 
         // Typeahead dropdown closed
         if (!state.isDropdownOpen) {
 
             // Down arrow or typing a letter should open dropdown.
-            if (e.keyCode === keyCodes.DOWN_ARROW ||
+            if (e.keyCode === KEYCODES.downArrow ||
                 alphaNumeric) {
                 showTypeahead(state.currentDropdown);
             }
@@ -70,14 +70,14 @@ const VUITypeahead = ({
         // Typeahead dropdown already open:
         } else {
 
-            if (e.keyCode === keyCodes.ESCAPE ||
-               (e.keyCode === keyCodes.BACKSPACE && e.target.value.length === 1)) {
+            if (e.keyCode === KEYCODES.escape ||
+               (e.keyCode === KEYCODES.backspace && e.target.value.length === 1)) {
                 closeDropdown();
             } else if (
-                e.keyCode === keyCodes.UP_ARROW ||
-                e.keyCode === keyCodes.DOWN_ARROW ||
-                (e.keyCode === keyCodes.UP_ARROW && e.altKey) ||
-                (e.keyCode === keyCodes.DOWN_ARROW && e.altKey)
+                e.keyCode === KEYCODES.upArrow ||
+                e.keyCode === KEYCODES.downArrow ||
+                (e.keyCode === KEYCODES.upArrow && e.altKey) ||
+                (e.keyCode === KEYCODES.downArrow && e.altKey)
                 ) {
 
                 // Move up and down list
@@ -92,7 +92,7 @@ const VUITypeahead = ({
                 state.currentInput.value = highlightedOption.innerText;
 
 
-            } else if (e.keyCode === keyCodes.ENTER) {
+            } else if (e.keyCode === KEYCODES.enter) {
                 handleEnter(e);
             } else if (alphaNumeric) {
                 updateOptions(e.target.value + e.key);
@@ -128,7 +128,7 @@ const VUITypeahead = ({
         // Create new dropdown element with same props.
         const dropDown = createEl(generateDropdown());
 
-        dropDown.classList.add(defaultClassNames.IS_ACTIVE);
+        dropDown.classList.add(DEFAULT_CLASSNAMES.isActive);
 
         // Add new subset to the new dropdown.
         state.subSetOptions.forEach(option => dropDown.appendChild(option));
