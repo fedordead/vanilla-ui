@@ -1,5 +1,7 @@
-import {keyCodes, defaultClassNames, NATIVELY_FOCUSABLE_ELEMENTS} from '../../constants';
+// Constants
+import {KEYCODES, DEFAULT_CLASSNAMES, NATIVELY_FOCUSABLE_ELEMENTS} from '../../constants';
 
+// Utils
 import createEl from '../../utils/createEl';
 import defer from '../../utils/defer';
 import qa from '../../utils/qa';
@@ -19,9 +21,12 @@ const VUIDialog = ({
         closeBtn = '.js-dialog-btn-close',
         isModal = false,
         isAlert = false,
-        readyClass = defaultClassNames.IS_READY,
-        activeClass = defaultClassNames.IS_ACTIVE,
-        showBackdrop = true
+        readyClass = DEFAULT_CLASSNAMES.isReady,
+        activeClass = DEFAULT_CLASSNAMES.isActive,
+        showBackdrop = true,
+        hasCloseBtn = false,
+        closeButtonClassName = 'c-dialog__btn-close',
+        closeButtonText = 'Close dialog'
     } = {}) => {
 
     // Stores all the constant dom nodes for the component regardless of instance.
@@ -35,6 +40,25 @@ const VUIDialog = ({
         currentDialog: null,
         focusableElements: null
     };
+
+
+    /**
+     * @function setState
+     * @desc Updates state for component
+     * @param {object} updates Changes in state to be assigned.
+     */
+    function setState(updates) {
+        state = Object.assign(state, updates);
+    }
+
+    /**
+     * @function setDOM
+     * @desc Updates DOM
+     * @param {object} updates Changes in DOM to be assigned.
+     */
+    function setDOM(updates) {
+        DOM = Object.assign(state, updates);
+    }
 
 
     /**
@@ -70,10 +94,12 @@ const VUIDialog = ({
     /**
      * @function createBackdrop
      * @desc Creates the dialog backdrop
+     * @param {string} className the class to be assigned to the backdrop
      */
-    function createBackdrop() {
-        // Create the backdrop
-        DOM.backdrop = createEl({className: defaultClassNames.BACKDROP});
+    function createBackdrop(className = DEFAULT_CLASSNAMES.backdrop) {
+        setDOM({
+            backdrop: createEl({className})
+        });
     }
 
 
@@ -107,12 +133,28 @@ const VUIDialog = ({
         const dialog = document.getElementById(button.getAttribute('data-controls-dialog'));
 
         // Update State
-        state.currentOpenButton = button;
-        state.currentDialog = dialog;
+        setState({
+            currentOpenButton: button,
+            currentDialog: dialog
+        });
 
         // Focus the dialog and remove aria attributes
         dialog.setAttribute('tabindex', 1);
         dialog.setAttribute('aria-hidden', false);
+
+        // Alerts and modal dialog types don't have close buttons
+        if (hasCloseBtn && !isAlert && !isModal) {
+            const closeBtnEl = createEl({
+                element: 'button',
+                className: ['js-dialog-btn-close', closeButtonClassName],
+                type: 'button',
+                children: [{
+                    element: 'span',
+                    text: closeButtonText
+                }]
+            });
+            dialog.appendChild(closeBtnEl);
+        }
 
         // Bind events
         defer(bindKeyCodeEvents);
@@ -123,14 +165,19 @@ const VUIDialog = ({
 
         // Add backdrop if needed
         if (DOM.backdrop) {
-            DOM.page.appendChild(DOM.backdrop);
+            DOM.body.appendChild(DOM.backdrop);
         }
 
         // Grabs elements that are focusable inside this dialog instance.
-        state.focusableElements = qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog);
+        setState({
+            focusableElements: qa(NATIVELY_FOCUSABLE_ELEMENTS.join(), dialog)
+        });
 
         // Add class to make dialog visible. Needs to occur before focus.
         dialog.classList.add(activeClass);
+
+        // Remove vertical viewport scroll
+        DOM.root.classList.add(DEFAULT_CLASSNAMES.hasNoVerticalScroll);
 
         // Set focus to first element, fallback to Dialog.
         if (state.focusableElements.length) {
@@ -144,8 +191,9 @@ const VUIDialog = ({
     /**
      * @function bindCloseEvents
      * @desc Finds all close buttons and attaches click event listener
+     * @param {node} dialog
      */
-    function bindCloseEvents() {
+    function bindCloseEvents(dialog = state.currentDialog) {
         // Grab all buttons which open this instance of the dialog
         const closeButtons = qa(closeBtn);
 
@@ -177,13 +225,20 @@ const VUIDialog = ({
 
         // Remove backdrop if needed
         if (DOM.backdrop) {
-            DOM.page.removeChild(DOM.backdrop);
+            DOM.body.removeChild(DOM.backdrop);
         }
 
-        // Reset state and return focus to button that opened the dialog
+        // Allow vertical viewport scroll
+        DOM.root.classList.remove(DEFAULT_CLASSNAMES.hasNoVerticalScroll);
+
+        // Return focus to button that opened the dialog
         state.currentOpenButton.focus();
-        state.currentOpenButton = null;
-        state.currentDialog = null;
+
+        // Reset State
+        setState({
+            currentOpenButton: null,
+            currentDialog: null
+        });
     }
 
 
@@ -211,11 +266,11 @@ const VUIDialog = ({
      * @param {Event} e
      */
     function handleKeyPress(e) {
-        if (e.keyCode === keyCodes.ESCAPE && !isModal && !isAlert) {
+        if (e.keyCode === KEYCODES.escape && !isModal && !isAlert) {
             closeDialog(state.currentDialog);
         }
 
-        if (e.keyCode === keyCodes.TAB && !isModal) {
+        if (e.keyCode === KEYCODES.tab && !isModal) {
             trapFocus(e, state.focusableElements);
         }
     }
@@ -224,22 +279,26 @@ const VUIDialog = ({
     /**
      * @function init
      * @desc Initialises the dialog
+     * @param {array} dialogs an array of DOM nodes
      */
-    function init() {
+    function init(dialogs, hasBackdrop) {
 
-        // Check if any dialogs exist, return if not
-        if (DOM.dialogs === undefined) {
+        // Check if any dialogs exist, don't initialise if not.
+        if (dialogs === undefined) {
             return false;
         }
 
-        // Add body element to the DOM object
-        DOM.page = qa('body')[0];
+        // Add `<body>` and `<html>` elements to the DOM object
+        setDOM({
+            root: qa('html')[0],
+            body: qa('body')[0]
+        });
 
-        if (showBackdrop) {
+        if (hasBackdrop) {
             createBackdrop();
         }
 
-        DOM.dialogs.forEach(dialog => {
+        dialogs.forEach(dialog => {
 
             // Add aria roles and attributes
             const role = isAlert ? 'alertdialog' : 'dialog';
@@ -255,7 +314,7 @@ const VUIDialog = ({
     }
 
     // Initialise VUIDialog component
-    init();
+    init(DOM.dialogs, showBackdrop);
 };
 
 

@@ -35,6 +35,10 @@ body {
     display: block !important;
 }
 
+html.has-no-vertical-scroll {
+    overflow-y: hidden !important;
+}
+
 .c-typeahead__dropdown {
     display: none;
 }

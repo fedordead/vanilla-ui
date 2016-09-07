@@ -6,7 +6,7 @@
  * @param {array} param.children a list of child element objects
  * @param {string} param.className a list of classes to be applied
  * @param {string} param.text text value for the element
- * @param {object} ...attributes any other attributes passed in.  Must be provided in camelcase
+ * @param {object} ...attributes any other attributes passed in.
  * @return {node} - Element with all applied attributes.
  */
 const createEl = ({
