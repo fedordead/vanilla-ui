@@ -22,7 +22,7 @@ export const DEFAULT_CLASSNAMES = Object.freeze({
 });
 
 
-export const NATIVELY_FOCUSABLE_ELEMENTS = [
+export const NATIVELY_FOCUSABLE_ELEMENTS = Object.freeze([
     'a[href]',
     'area[href]',
     'input:not([disabled])',
@@ -34,4 +34,4 @@ export const NATIVELY_FOCUSABLE_ELEMENTS = [
     'embed',
     '[contenteditable]',
     '[tabindex]:not([tabindex^="-"])'
-];
+]);
