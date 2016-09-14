@@ -153,6 +153,7 @@ const VUIDialog = ({
                     text: closeButtonText
                 }]
             });
+
             dialog.appendChild(closeBtnEl);
         }
 

@@ -1,5 +1,5 @@
 // Keyboard keycodes
-export const KEYCODES = {
+export const KEYCODES = Object.freeze({
     tab: 9,
     enter: 13,
     escape: 27,
@@ -8,21 +8,21 @@ export const KEYCODES = {
     upArrow: 38,
     rightArrow: 39,
     downArrow: 40
-};
+});
 
 
 // Classnames likely to be shared across modules
-export const DEFAULT_CLASSNAMES = {
+export const DEFAULT_CLASSNAMES = Object.freeze({
     isActive: 'is-active',
     isHidden: 'is-hidden',
     isReady: 'is-ready',
     hasNoVerticalScroll: 'has-no-vertical-scroll',
     noBackdrop: 'no-backdrop',
     backdrop: 'dialog-backdrop'
-};
+});
 
 
-export const NATIVELY_FOCUSABLE_ELEMENTS = [
+export const NATIVELY_FOCUSABLE_ELEMENTS = Object.freeze([
     'a[href]',
     'area[href]',
     'input:not([disabled])',
@@ -34,4 +34,4 @@ export const NATIVELY_FOCUSABLE_ELEMENTS = [
     'embed',
     '[contenteditable]',
     '[tabindex]:not([tabindex^="-"])'
-];
+]);
